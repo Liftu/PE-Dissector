@@ -1,7 +1,33 @@
 #include <stdio.h>
 #include <Windows.h>
+#include <winnt.h>
 
-BOOL isFileExecutable(LPCTSTR file);
+typedef struct _PE_HEADERS32
+{
+	IMAGE_DOS_HEADER dosHeader;
+	IMAGE_NT_HEADERS32 ntHeaders;
+	IMAGE_SECTION_HEADER* sectionHeader;
+	IMAGE_EXPORT_DIRECTORY exportDirectory;
+	IMAGE_IMPORT_DESCRIPTOR* importDescriptor;
+	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
+	IMAGE_DEBUG_DIRECTORY debugDirectory;
+	IMAGE_TLS_DIRECTORY32 tlsDirectory;
+	//IMAGE_DELAY_IMPORT_DESCRIPTOR
+} PE_HEADERS32, *PPE_HEADERS32;
+
+typedef struct _PE_HEADERS64
+{
+	IMAGE_DOS_HEADER dosHeader;
+	IMAGE_NT_HEADERS64 ntHeaders;
+	IMAGE_EXPORT_DIRECTORY exportDirectory;
+	IMAGE_IMPORT_DESCRIPTOR* importDescriptor;
+	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
+	IMAGE_DEBUG_DIRECTORY debugDirectory;
+	IMAGE_TLS_DIRECTORY64 tlsDirectory;
+} PE_HEADERS64, *PPE_HEADERS64;
+
+BOOL isFileExecutable(HANDLE file);
+BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32);
 
 LPTSTR fileName;
 LPTSTR fileTitle;
@@ -79,6 +105,14 @@ int main(int argc, char* argv[])
 	}
 	printf("Successfully opened the file : %s\n", fileTitle);
 
+	PE_HEADERS32 peHeader32;
+	if (!readPEHeaders32(hFile, &peHeader32))
+	{
+		printf("Error while reading pe headers.\nClosing...\n");
+		return EXIT_FAILURE;
+	}
+	
+	printf("TimeDateStamp : %x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
 
 	free(fileName);
 	free(fileTitle);
@@ -96,4 +130,21 @@ BOOL isFileExecutable(HANDLE file)
 		return EXIT_FAILURE;
 	}
 	return magicNumber == 0x5A4D && numberOfBytesRead == 2;
+}
+
+BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32)
+{
+	DWORD numberOfBytesRead = 0;
+	SetFilePointer(hFile, NULL, NULL, FILE_BEGIN);
+	if (!ReadFile(hFile, &peHeader32->dosHeader, sizeof(IMAGE_DOS_HEADER), &numberOfBytesRead, NULL))
+		return FALSE;
+
+	numberOfBytesRead = 0;
+	SetFilePointer(hFile, peHeader32->dosHeader.e_lfanew, NULL, FILE_BEGIN);
+	if (!ReadFile(hFile, &peHeader32->ntHeaders, sizeof(IMAGE_DOS_HEADER), &numberOfBytesRead, NULL))
+		return FALSE;
+
+	// More to come
+
+	return TRUE;
 }
