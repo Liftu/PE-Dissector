@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <Windows.h>
 
+BOOL isFileExecutable(LPCTSTR file);
+
 LPTSTR fileName;
 LPTSTR fileTitle;
 HANDLE hFile;
@@ -67,14 +69,31 @@ int main(int argc, char* argv[])
 		if (GetFileTitle(fileName, fileTitle, MAX_PATH))
 		{
 			printf("Error while getting file title from : %s\nClosing...\n", fileName);
-			return EXIT_SUCCESS;
+			return EXIT_FAILURE;
 		}
 	}
-
+	if (!isFileExecutable(hFile))
+	{
+		printf("Error : %s is not an executable module.\nClosing...\n", fileTitle);
+		return EXIT_FAILURE;
+	}
 	printf("Successfully opened the file : %s\n", fileTitle);
+
 
 	free(fileName);
 	free(fileTitle);
 	system("PAUSE");
 	return EXIT_SUCCESS;
+}
+
+BOOL isFileExecutable(HANDLE file)
+{
+	WORD magicNumber = 0;
+	DWORD numberOfBytesRead = 0;
+	if (!ReadFile(file, &magicNumber, 2, &numberOfBytesRead, NULL))
+	{
+		printf("Error while getting magic number from : %s\nClosing...\n", fileName);
+		return EXIT_FAILURE;
+	}
+	return magicNumber == 0x5A4D && numberOfBytesRead == 2;
 }
