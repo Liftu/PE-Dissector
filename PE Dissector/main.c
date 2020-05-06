@@ -2,50 +2,20 @@
 #include <Windows.h>
 #include <winnt.h>
 
-typedef struct _PE_HEADERS32
-{
-	IMAGE_DOS_HEADER dosHeader;
-	IMAGE_NT_HEADERS32 ntHeaders;
-	IMAGE_SECTION_HEADER* sectionHeader;
-	IMAGE_EXPORT_DIRECTORY exportDirectory;
-	IMAGE_IMPORT_DESCRIPTOR* importDescriptor;
-	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
-	IMAGE_DEBUG_DIRECTORY debugDirectory;
-	IMAGE_TLS_DIRECTORY32 tlsDirectory;
-	//IMAGE_DELAY_IMPORT_DESCRIPTOR
-} PE_HEADERS32, *PPE_HEADERS32;
-
-typedef struct _PE_HEADERS64
-{
-	IMAGE_DOS_HEADER dosHeader;
-	IMAGE_NT_HEADERS64 ntHeaders;
-	IMAGE_EXPORT_DIRECTORY exportDirectory;
-	IMAGE_IMPORT_DESCRIPTOR* importDescriptor;
-	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
-	IMAGE_DEBUG_DIRECTORY debugDirectory;
-	IMAGE_TLS_DIRECTORY64 tlsDirectory;
-} PE_HEADERS64, *PPE_HEADERS64;
-
-BOOL isFileExecutable(HANDLE file);
-BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32);
-
-LPTSTR fileName;
-LPTSTR fileTitle;
-HANDLE hFile;
+#include "PE Dissecotr.h"
 
 int main(int argc, char* argv[])
 {
+	LPTSTR fileName;
+	LPTSTR fileTitle;
+	HANDLE hFile;
+
 	fileName = (LPTSTR)malloc(sizeof(TCHAR) * MAX_PATH);
 	memset(fileName, 0, MAX_PATH);
 	fileTitle = (LPTSTR)malloc(sizeof(TCHAR) * MAX_PATH);
 	memset(fileTitle, 0, MAX_PATH);
 
-	if (argc > 2)
-	{
-		printf("USAGE: %s <filename>\n", argv[0]);
-		return EXIT_FAILURE;
-	}
-	else if (argc == 1)
+	if (argc == 1)
 	{
 		OPENFILENAME openFileName;
 		memset(&openFileName, 0, sizeof(OPENFILENAME));
@@ -98,6 +68,12 @@ int main(int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 	}
+	else
+	{
+		printf("USAGE: %s <filename>\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+
 	if (!isFileExecutable(hFile))
 	{
 		printf("Error : %s is not an executable module.\nClosing...\n", fileTitle);
@@ -118,33 +94,4 @@ int main(int argc, char* argv[])
 	free(fileTitle);
 	system("PAUSE");
 	return EXIT_SUCCESS;
-}
-
-BOOL isFileExecutable(HANDLE file)
-{
-	WORD magicNumber = 0;
-	DWORD numberOfBytesRead = 0;
-	if (!ReadFile(file, &magicNumber, 2, &numberOfBytesRead, NULL))
-	{
-		printf("Error while getting magic number from : %s\nClosing...\n", fileName);
-		return EXIT_FAILURE;
-	}
-	return magicNumber == 0x5A4D && numberOfBytesRead == 2;
-}
-
-BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32)
-{
-	DWORD numberOfBytesRead = 0;
-	SetFilePointer(hFile, NULL, NULL, FILE_BEGIN);
-	if (!ReadFile(hFile, &peHeader32->dosHeader, sizeof(IMAGE_DOS_HEADER), &numberOfBytesRead, NULL))
-		return FALSE;
-
-	numberOfBytesRead = 0;
-	SetFilePointer(hFile, peHeader32->dosHeader.e_lfanew, NULL, FILE_BEGIN);
-	if (!ReadFile(hFile, &peHeader32->ntHeaders, sizeof(IMAGE_DOS_HEADER), &numberOfBytesRead, NULL))
-		return FALSE;
-
-	// More to come
-
-	return TRUE;
 }
