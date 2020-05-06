@@ -126,6 +126,9 @@ int main(int argc, char* argv[])
 	// Test debug directory
 	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress > 0)
 		printf("Type of the debug directory : 0x%x\n", peHeader32.debugDirectory.Type);
+	// Test TLS directory // Gonna assume it works because I can't find a PE sample with TLS directory in it...
+	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress > 0)
+		printf("Characteristics of the TLS directory : 0x%x\n", peHeader32.tlsDirectory.Characteristics);
 
 	CloseHandle(hFile);
 	free(fileName);

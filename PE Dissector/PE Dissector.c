@@ -113,6 +113,20 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeader32)
 			return FALSE;
 	}
 
+	// TLS DIRECTORY // Gonna assume it works because I can't find a PE sample with TLS directory in it...
+	// Check if there is an export directory and gets the index of the section it is in.
+	if ((sectionNumber = getSectionOfRVA(peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress,
+		peHeader32->ntHeaders.FileHeader.NumberOfSections, peHeader32->sectionHeaders)) != (WORD)-1)
+	{
+		numberOfBytesRead = 0;
+		SetFilePointer(hFile, (peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress
+			- peHeader32->sectionHeaders[sectionNumber].VirtualAddress + peHeader32->sectionHeaders[sectionNumber].PointerToRawData),
+			NULL, FILE_BEGIN);
+
+		if (!ReadFile(hFile, &peHeader32->tlsDirectory, sizeof(IMAGE_TLS_DIRECTORY32), &numberOfBytesRead, NULL))
+			return FALSE;
+	}
+
 	// More to come
 
 	return TRUE;
