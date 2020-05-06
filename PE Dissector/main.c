@@ -91,22 +91,37 @@ int main(int argc, char* argv[])
 	PE_HEADERS32 peHeader32;
 	if (!readPEHeaders32(hFile, &peHeader32))
 	{
-		printf("Error while reading pe headers.\nClosing...\n");
+		printf("Error while parsing pe headers.\nClosing...\n");
 		return EXIT_FAILURE;
 	}
 	
 	// Test DOS header
-	printf("Magic number : %.2s (0x%x)\n", &peHeader32.dosHeader.e_magic, peHeader32.dosHeader.e_magic);
+	printf("Magic number : %.2s (0x%x)\n", (LPSTR)&peHeader32.dosHeader.e_magic, peHeader32.dosHeader.e_magic);
 	// Test NT headers
 	printf("Machine : %i Bits (%s)\n", peHeader32.ntHeaders.OptionalHeader.Magic == 0x010B ? 32 : 64, peHeader32.ntHeaders.OptionalHeader.Magic == 0x010B ? "PE32" : "PE32+");
 	printf("TimeDateStamp : 0x%x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
 	// Test section headers
 	printf("Name of 3rd section : %.8s\n", peHeader32.sectionHeaders[2].Name);
 	// Test export directory
-	if (peHeader32.exportDirectory.NumberOfFunctions)
+	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress > 0)
 		printf("TimeDateStamp of export directory : 0x%x\n", peHeader32.exportDirectory.TimeDateStamp);
+	// Test import directory
+	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress > 0)
+	{
+		WORD sectionNumber;
+		if ((sectionNumber = getSectionOfRVA(peHeader32.importDescriptors[0].Name,
+			peHeader32.ntHeaders.FileHeader.NumberOfSections, peHeader32.sectionHeaders)) != (WORD)-1)
+		{
+			DWORD numberOfBytesRead = 0;
+			CHAR moduleName[MAX_PATH];
+			SetFilePointer(hFile, (peHeader32.importDescriptors[0].Name - peHeader32.sectionHeaders[sectionNumber].VirtualAddress 
+				+ peHeader32.sectionHeaders[sectionNumber].PointerToRawData), NULL, FILE_BEGIN);
+			if (ReadFile(hFile, &moduleName, MAX_PATH, &numberOfBytesRead, NULL))
+				printf("Module name of the first import descriptor : %s\n", moduleName);
+		}
+	}
 
-
+	CloseHandle(hFile);
 	free(fileName);
 	free(fileTitle);
 	system("PAUSE");
