@@ -1,10 +1,31 @@
 #include "PE Dissector.h"
 
-BOOL isFileExecutable(HANDLE file)
+WORD getArchitecture(HANDLE hFile)
+{
+	WORD architecture = 0;
+	DWORD lfanew;
+	DWORD numberOfBytesRead = 0;
+	SetFilePointer(hFile, 0x3C, NULL, FILE_BEGIN);
+	if (!ReadFile(hFile, &lfanew, sizeof(DWORD), &numberOfBytesRead, NULL))
+	{
+		perror("Error while getting lfanew value.\nClosing...\n");
+		exit(EXIT_FAILURE);
+	}
+	SetFilePointer(hFile, lfanew + 0x4, NULL, FILE_BEGIN);
+	if (!ReadFile(hFile, &architecture, sizeof(WORD), &numberOfBytesRead, NULL))
+	{
+		perror("Error while getting architecture value in file header.\nClosing...\n");
+		exit(EXIT_FAILURE);
+	}
+	return architecture;
+}
+
+BOOL isFileExecutable(HANDLE hFile)
 {
 	WORD magicNumber = 0;
 	DWORD numberOfBytesRead = 0;
-	if (!ReadFile(file, &magicNumber, 2, &numberOfBytesRead, NULL))
+	SetFilePointer(hFile, NULL, NULL, FILE_BEGIN);
+	if (!ReadFile(hFile, &magicNumber, sizeof(WORD), &numberOfBytesRead, NULL))
 	{
 		perror("Error while getting magic number.\nClosing...\n");
 		exit(EXIT_FAILURE);
@@ -39,7 +60,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeader32)
 	WORD sectionNumber;
 	// Check if there is an export directory and gets the index of the section it is in.
 	if ((sectionNumber = getSectionOfRVA(peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress,
-		peHeader32->ntHeaders.FileHeader.NumberOfSections, peHeader32->sectionHeaders)) != -1)
+		peHeader32->ntHeaders.FileHeader.NumberOfSections, peHeader32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
 		SetFilePointer(hFile, (peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress 

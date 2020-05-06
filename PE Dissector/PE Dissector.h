@@ -31,6 +31,7 @@ typedef struct _PE_HEADERS64
 	IMAGE_TLS_DIRECTORY64 tlsDirectory;
 } PE_HEADERS64, *PPE_HEADERS64;
 
-BOOL isFileExecutable(HANDLE file);
-BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32);
+BOOL isFileExecutable(HANDLE hFile);
+WORD getArchitecture(HANDLE hFile);
+BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeader32);
 WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders);

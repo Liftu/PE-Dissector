@@ -81,6 +81,13 @@ int main(int argc, char* argv[])
 	}
 	printf("Successfully opened the file : %s\n", fileTitle);
 
+	WORD architecture = getArchitecture(hFile);
+	if (architecture != IMAGE_FILE_MACHINE_I386)
+	{
+		printf("Architecture not supported : 0x%x.\nClosing...\n", architecture);
+		return EXIT_FAILURE;
+	}
+
 	PE_HEADERS32 peHeader32;
 	if (!readPEHeaders32(hFile, &peHeader32))
 	{
@@ -91,8 +98,8 @@ int main(int argc, char* argv[])
 	// Test DOS header
 	printf("Magic number : %.2s (0x%x)\n", &peHeader32.dosHeader.e_magic, peHeader32.dosHeader.e_magic);
 	// Test NT headers
+	printf("Machine : %i Bits (%s)\n", peHeader32.ntHeaders.OptionalHeader.Magic == 0x010B ? 32 : 64, peHeader32.ntHeaders.OptionalHeader.Magic == 0x010B ? "PE32" : "PE32+");
 	printf("TimeDateStamp : 0x%x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
-	printf("Import directory entry : 0x%x\n", peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
 	// Test section headers
 	printf("Name of 3rd section : %.8s\n", peHeader32.sectionHeaders[2].Name);
 	// Test export directory
