@@ -120,6 +120,9 @@ int main(int argc, char* argv[])
 				printf("Module name of the first import descriptor : %s\n", moduleName);
 		}
 	}
+	// Test resource directory
+	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress > 0)
+		printf("Number of ID entries in export directory : 0x%x\n", peHeader32.resourceDirectory.NumberOfIdEntries);
 
 	CloseHandle(hFile);
 	free(fileName);

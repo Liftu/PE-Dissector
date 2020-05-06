@@ -13,7 +13,7 @@ typedef struct _PE_HEADERS32
 	IMAGE_SECTION_HEADER* sectionHeaders;
 	IMAGE_EXPORT_DIRECTORY exportDirectory;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
-	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
+	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;
 	IMAGE_TLS_DIRECTORY32 tlsDirectory;
 	//IMAGE_DELAY_IMPORT_DESCRIPTOR
@@ -26,7 +26,7 @@ typedef struct _PE_HEADERS64
 	IMAGE_SECTION_HEADER* sectionHeaders;
 	IMAGE_EXPORT_DIRECTORY exportDirectory;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
-	IMAGE_RESOURCE_DIRECTORY ressourceDirectory;
+	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;
 	IMAGE_TLS_DIRECTORY64 tlsDirectory;
 } PE_HEADERS64, *PPE_HEADERS64;
