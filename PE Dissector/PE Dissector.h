@@ -3,6 +3,9 @@
 #include <Windows.h>
 #include <winnt.h>
 
+// Don't know why, bu I had to define it myself.
+typedef unsigned __int64 QWORD;
+
 typedef struct _PE_HEADERS32
 {
 	IMAGE_DOS_HEADER dosHeader;
@@ -30,3 +33,4 @@ typedef struct _PE_HEADERS64
 
 BOOL isFileExecutable(HANDLE file);
 BOOL readPEHeaders32(HANDLE file, PPE_HEADERS32 peHeader32);
+WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders);

@@ -88,9 +88,17 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 	
+	// Test DOS header
+	printf("Magic number : %.2s (0x%x)\n", &peHeader32.dosHeader.e_magic, peHeader32.dosHeader.e_magic);
+	// Test NT headers
 	printf("TimeDateStamp : 0x%x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
 	printf("Import directory entry : 0x%x\n", peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+	// Test section headers
 	printf("Name of 3rd section : %.8s\n", peHeader32.sectionHeaders[2].Name);
+	// Test export directory
+	if (peHeader32.exportDirectory.NumberOfFunctions)
+		printf("TimeDateStamp of export directory : 0x%x\n", peHeader32.exportDirectory.TimeDateStamp);
+
 
 	free(fileName);
 	free(fileTitle);
