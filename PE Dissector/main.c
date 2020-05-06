@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <winnt.h>
 
-#include "PE Dissecotr.h"
+#include "PE Dissector.h"
 
 int main(int argc, char* argv[])
 {
@@ -88,7 +88,9 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 	
-	printf("TimeDateStamp : %x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
+	printf("TimeDateStamp : 0x%x\n", peHeader32.ntHeaders.FileHeader.TimeDateStamp);
+	printf("Import directory entry : 0x%x\n", peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+	printf("Name of 3rd section : %.8s\n", peHeader32.sectionHeaders[2].Name);
 
 	free(fileName);
 	free(fileTitle);

@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PE Dissecotr.h">
+    <ClInclude Include="PE Dissector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
