@@ -99,6 +99,20 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeader32)
 			return FALSE;
 	}
 
+	// DEBUG DIRECTORY
+	// Check if there is an export directory and gets the index of the section it is in.
+	if ((sectionNumber = getSectionOfRVA(peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress,
+		peHeader32->ntHeaders.FileHeader.NumberOfSections, peHeader32->sectionHeaders)) != (WORD)-1)
+	{
+		numberOfBytesRead = 0;
+		SetFilePointer(hFile, (peHeader32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress
+			- peHeader32->sectionHeaders[sectionNumber].VirtualAddress + peHeader32->sectionHeaders[sectionNumber].PointerToRawData),
+			NULL, FILE_BEGIN);
+
+		if (!ReadFile(hFile, &peHeader32->debugDirectory, sizeof(IMAGE_DEBUG_DIRECTORY), &numberOfBytesRead, NULL))
+			return FALSE;
+	}
+
 	// More to come
 
 	return TRUE;

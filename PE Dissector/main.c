@@ -123,6 +123,9 @@ int main(int argc, char* argv[])
 	// Test resource directory
 	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress > 0)
 		printf("Number of ID entries in export directory : 0x%x\n", peHeader32.resourceDirectory.NumberOfIdEntries);
+	// Test debug directory
+	if (peHeader32.ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress > 0)
+		printf("Type of the debug directory : 0x%x\n", peHeader32.debugDirectory.Type);
 
 	CloseHandle(hFile);
 	free(fileName);
