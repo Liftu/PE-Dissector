@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="MainWindow">
+    <file>Resources/OpenFolder_16x.png</file>
+    <file>Resources/BalanceBrace_16x.png</file>
+    <file>Resources/Cancel_16x.png</file>
+    <file>Resources/CloseSolution_16x.png</file>
+    <file>Resources/DisassemblyWindow_16x.png</file>
+    <file>Resources/Save_16x.png</file>
+    <file>Resources/SaveAll_16x.png</file>
+    <file>Resources/SaveAs_16x.png</file>
+    <file>Resources/Table_16x.png</file>
+  </qresource>
+</RCC>
