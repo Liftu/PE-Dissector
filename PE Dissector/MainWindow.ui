@@ -121,6 +121,12 @@
    </property>
   </action>
   <action name="actionToggle_List_View">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="MainWindow.qrc">
      <normaloff>:/MainWindow/Resources/Table_16x.png</normaloff>:/MainWindow/Resources/Table_16x.png</iconset>
@@ -130,6 +136,9 @@
    </property>
   </action>
   <action name="actionToggle_Hex_View">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="MainWindow.qrc">
      <normaloff>:/MainWindow/Resources/BalanceBrace_16x.png</normaloff>:/MainWindow/Resources/BalanceBrace_16x.png</iconset>
