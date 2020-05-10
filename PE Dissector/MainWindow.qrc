@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="MainWindow">
+    <file>Resources/BinaryFile_16x.png</file>
     <file>Resources/OpenFolder_16x.png</file>
     <file>Resources/BalanceBrace_16x.png</file>
     <file>Resources/Cancel_16x.png</file>

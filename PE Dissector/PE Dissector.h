@@ -33,5 +33,5 @@ typedef struct _PE_HEADERS64
 
 BOOL isFileExecutable(HANDLE hFile);
 WORD getArchitecture(HANDLE hFile);
-BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeader32);
+BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32);
 WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders);

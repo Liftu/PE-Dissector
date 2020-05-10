@@ -83,6 +83,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="PE Dissector.c" />
+    <ClCompile Include="QTabContent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h" />
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PE Dissector.h" />
+    <QtMoc Include="QTabContent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -8,10 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
 	statusBarLabel = new QLabel(QString("No file loaded"), ui.statusBar);
 	ui.statusBar->addWidget(statusBarLabel);
 
-	ui.headerTree->setColumnCount(0);
+	ui.treeView->setColumnCount(0);
 }
 
-void MainWindow::headerTree_selectionChanged()
+void MainWindow::treeView_selectionChanged()
 {
 	qDebug() << "toto";
 }
@@ -24,9 +24,41 @@ void MainWindow::actionOpen_File_triggered()
 		&QString("All PE files (*.exe *.dll *.sys *.drv *.ocx *.cpl *.scr)"));
 	for (QString filename : fileList)
 	{
-		qDebug() << "file : ";
-		qDebug() << filename;
+		qDebug() << "file : " << filename;
 		addFile(filename);
+	}
+}
+
+void MainWindow::actionClose_File_triggered()
+{
+	// Sould delete widget first;
+	qDebug() << "close file : " << ui.tabManager->currentIndex();
+
+	disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_List_View_triggered(bool)));
+	disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_Hex_View_triggered(bool)));
+	ui.tabManager->removeTab(ui.tabManager->currentIndex());
+
+	if (!ui.tabManager->count())
+	{
+		ui.actionClose_File->setEnabled(false);
+		ui.actionSave_File->setEnabled(false);
+		ui.actionSave_As->setEnabled(false);
+		ui.actionSave_All->setEnabled(false);
+		ui.actionToggle_List_View->setEnabled(false);
+		ui.actionToggle_Hex_View->setEnabled(false);
+	}
+}
+
+void MainWindow::tabManager_currentChanged(int tabIndex)
+{
+	qDebug() << "tab changed, current = " << tabIndex;
+	if (tabIndex >= 0)
+	{
+		//disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), 0, 0);
+		//disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), 0, 0);
+		//connect(ui.actionToggle_List_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_List_View_triggered(bool)));
+		//connect(ui.actionToggle_Hex_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_Hex_View_triggered(bool)));
+		//updateTreeViewView();
 	}
 }
 
@@ -48,13 +80,13 @@ bool MainWindow::addFile(QString filename)
 
 	if (getArchitecture(hFile) != IMAGE_FILE_MACHINE_I386)
 	{
-		QMessageBox::warning(this, QString("Architecture not supported"), QString("PE Dissector only supports 32 bits application for now."));
+		QMessageBox::warning(this, QFileInfo(filename).fileName(), QString("PE Dissector only supports 32 bits application for now."));
 		statusBarLabel->setText(QString("Architecture of ") + QFileInfo(filename).fileName() + QString(" not supported."));
 		return false;
 	}
 	
-	PE_HEADERS32 peHeader32;
-	if (!readPEHeaders32(hFile, &peHeader32))
+	PE_HEADERS32 peHeaders32;
+	if (!readPEHeaders32(hFile, &peHeaders32))
 	{
 		statusBarLabel->setText(QString("Error while parsing ") + QFileInfo(filename).fileName() + QString("!"));
 		return false;
@@ -62,6 +94,39 @@ bool MainWindow::addFile(QString filename)
 
 	statusBarLabel->setText(QFileInfo(filename).fileName() + QString(" successfully loaded"));
 
+	// Get the List View and Hex View and put them in a new tab.
+	QTabContent* tabContent = new QTabContent(peHeaders32, ui.actionToggle_List_View->isChecked(), ui.actionToggle_Hex_View->isChecked());
+	connect(ui.actionToggle_List_View, SIGNAL(toggled(bool)), tabContent, SLOT(actionToggle_List_View_triggered(bool)));
+	connect(ui.actionToggle_Hex_View, SIGNAL(toggled(bool)), tabContent, SLOT(actionToggle_Hex_View_triggered(bool)));
+	ui.tabManager->setCurrentIndex(ui.tabManager->addTab(tabContent, QFileInfo(filename).fileName()));
+
+	ui.actionClose_File->setEnabled(true);
+	//ui.actionSave_File->setEnabled(true);
+	//ui.actionSave_As->setEnabled(true);
+	//ui.actionSave_All->setEnabled(true);
+	ui.actionToggle_List_View->setEnabled(true);
+	ui.actionToggle_Hex_View->setEnabled(true);
+
+	//updateTreeView(peHeaders32);
+
 	CloseHandle(hFile);
 	return true;
+}
+
+void MainWindow::updateTreeView(PE_HEADERS32 peHeaders)
+{
+	ui.treeView->setColumnCount(0);
+	ui.treeView->setHeaderLabels(QStringList("Header"));
+	QList<QTreeWidgetItem*> treeItems;
+	for (int i = 0; i < 10; ++i)
+	{
+		treeItems.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("item: %1").arg(i))));
+	}
+	ui.treeView->insertTopLevelItems(0, treeItems);
+}
+
+QTableWidget* MainWindow::getNewListView(PE_HEADERS32 peHeaders)
+{
+	QTableWidget* table = new QTableWidget;
+	return nullptr;
 }

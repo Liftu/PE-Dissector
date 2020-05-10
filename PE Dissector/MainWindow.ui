@@ -31,7 +31,7 @@
      <number>1</number>
     </property>
     <item>
-     <widget class="QTreeWidget" name="headerTree">
+     <widget class="QTreeWidget" name="treeView">
       <property name="minimumSize">
        <size>
         <width>200</width>
@@ -46,7 +46,7 @@
       </property>
       <column>
        <property name="text">
-        <string notr="true">1</string>
+        <string notr="true">Headers</string>
        </property>
       </column>
      </widget>
@@ -99,6 +99,9 @@
    <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="maximumSize">
     <size>
      <width>16777215</width>
@@ -136,7 +139,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="enabled">
     <bool>false</bool>
@@ -253,7 +256,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>headerTree</sender>
+   <sender>treeView</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>MainWindowClass</receiver>
    <slot>headerTree_SelectionChanged()</slot>
@@ -284,9 +287,46 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionClose_File</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindowClass</receiver>
+   <slot>actionClose_File_triggered()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabManager</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindowClass</receiver>
+   <slot>tabManager_currentChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>410</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>607</x>
+     <y>189</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>headerTree_SelectionChanged()</slot>
   <slot>actionOpen_File_triggered()</slot>
+  <slot>actionClose_File_triggered()</slot>
+  <slot>actionSave_File_triggered()</slot>
+  <slot>actionSave_As_triggered()</slot>
+  <slot>actionSave_All_triggered()</slot>
+  <slot>tabManager_currentChanged(int)</slot>
  </slots>
 </ui>

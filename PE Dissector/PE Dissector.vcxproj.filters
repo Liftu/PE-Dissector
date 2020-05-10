@@ -8,6 +8,9 @@
     <ClCompile Include="PE Dissector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QTabContent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -33,6 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QTabContent.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
