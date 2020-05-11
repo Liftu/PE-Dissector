@@ -259,7 +259,7 @@
    <sender>treeView</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>MainWindowClass</receiver>
-   <slot>headerTree_SelectionChanged()</slot>
+   <slot>treeView_selectionChanged()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>117</x>
@@ -321,7 +321,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>headerTree_SelectionChanged()</slot>
+  <slot>treeView_selectionChanged()</slot>
   <slot>actionOpen_File_triggered()</slot>
   <slot>actionClose_File_triggered()</slot>
   <slot>actionSave_File_triggered()</slot>

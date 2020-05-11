@@ -14,7 +14,8 @@ class QTabContent : public QWidget
 	Q_OBJECT
 
 public:
-	QTabContent(PE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
+	QTabContent(PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
+	~QTabContent();
 
 public slots:
 	void actionToggle_List_View_triggered(bool triggered);

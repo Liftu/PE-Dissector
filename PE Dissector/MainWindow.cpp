@@ -11,15 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
 	ui.treeView->setColumnCount(0);
 }
 
-void MainWindow::treeView_selectionChanged()
-{
-	qDebug() << "toto";
-}
-
 void MainWindow::actionOpen_File_triggered()
 {
 	qDebug() << "open file";
-	QStringList fileList = QFileDialog::getOpenFileNames(this, QString("Select a PE file to dissect"), QString(), 
+	QStringList fileList = QFileDialog::getOpenFileNames(this, QString("Select a PE file to dissect"), QString(),
 		QString("All files (*.*);;All PE files (*.exe *.dll *.sys *.drv *.ocx *.cpl *.scr);;Exe files (*.exe);;Dll files (*.dll);;System files (*.sys *.drv);;ActiveX control files (*.ocx);;Control panel files (*.cpl);;Screensaver files(*.scr)"),
 		&QString("All PE files (*.exe *.dll *.sys *.drv *.ocx *.cpl *.scr)"));
 	for (QString filename : fileList)
@@ -31,12 +26,15 @@ void MainWindow::actionOpen_File_triggered()
 
 void MainWindow::actionClose_File_triggered()
 {
-	// Sould delete widget first;
 	qDebug() << "close file : " << ui.tabManager->currentIndex();
 
 	disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_List_View_triggered(bool)));
 	disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_Hex_View_triggered(bool)));
+
+	// Delete the widget of a tab when removing a tab.
+	QWidget* tabContent = ui.tabManager->widget(ui.tabManager->currentIndex());
 	ui.tabManager->removeTab(ui.tabManager->currentIndex());
+	delete tabContent;
 
 	if (!ui.tabManager->count())
 	{
@@ -58,8 +56,13 @@ void MainWindow::tabManager_currentChanged(int tabIndex)
 		//disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), 0, 0);
 		//connect(ui.actionToggle_List_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_List_View_triggered(bool)));
 		//connect(ui.actionToggle_Hex_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_Hex_View_triggered(bool)));
-		//updateTreeViewView();
+		//updateTreeView();
 	}
+}
+
+void MainWindow::treeView_selectionChanged()
+{
+	qDebug() << "toto";
 }
 
 bool MainWindow::addFile(QString filename)
@@ -85,8 +88,8 @@ bool MainWindow::addFile(QString filename)
 		return false;
 	}
 	
-	PE_HEADERS32 peHeaders32;
-	if (!readPEHeaders32(hFile, &peHeaders32))
+	PPE_HEADERS32 peHeaders32 = new PE_HEADERS32;
+	if (!readPEHeaders32(hFile, peHeaders32))
 	{
 		statusBarLabel->setText(QString("Error while parsing ") + QFileInfo(filename).fileName() + QString("!"));
 		return false;
@@ -113,7 +116,7 @@ bool MainWindow::addFile(QString filename)
 	return true;
 }
 
-void MainWindow::updateTreeView(PE_HEADERS32 peHeaders)
+void MainWindow::updateTreeView(PPE_HEADERS32 peHeaders)
 {
 	ui.treeView->setColumnCount(0);
 	ui.treeView->setHeaderLabels(QStringList("Header"));
@@ -125,8 +128,3 @@ void MainWindow::updateTreeView(PE_HEADERS32 peHeaders)
 	ui.treeView->insertTopLevelItems(0, treeItems);
 }
 
-QTableWidget* MainWindow::getNewListView(PE_HEADERS32 peHeaders)
-{
-	QTableWidget* table = new QTableWidget;
-	return nullptr;
-}

@@ -1,6 +1,6 @@
 #include "QTabContent.h"
 
-QTabContent::QTabContent(PE_HEADERS32 peHeaders, bool displayListView, bool displayHexView)
+QTabContent::QTabContent(PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView)
 {
 	hBoxLayout = new QHBoxLayout();
 	listView = new QTableWidget(3,3);
@@ -13,6 +13,14 @@ QTabContent::QTabContent(PE_HEADERS32 peHeaders, bool displayListView, bool disp
 
 	listView->setHidden(!displayListView);
 	hexView->setHidden(!displayHexView);
+}
+
+QTabContent::~QTabContent()
+{
+	qDebug() << "QTabContent destruction.";
+	delete hBoxLayout;
+	delete listView;
+	delete hexView;
 }
 
 void QTabContent::actionToggle_List_View_triggered(bool triggered)

@@ -33,16 +33,14 @@ public:
 	MainWindow(QWidget *parent = Q_NULLPTR);
 
 public slots:
-	void treeView_selectionChanged();
 	void actionOpen_File_triggered();
 	void actionClose_File_triggered();
 	void tabManager_currentChanged(int tabIndex);
+	void treeView_selectionChanged();
 
 private:
 	bool addFile(QString filename);
-	void updateTreeView(PE_HEADERS32 peHeaders);
-	QTabContent* getNewTabContent(PE_HEADERS32 peHeaders);
-	QTableWidget* getNewListView(PE_HEADERS32 peHeaders);
+	void updateTreeView(PPE_HEADERS32 peHeaders);
 
 	Ui::MainWindowClass ui;
 	QLabel* statusBarLabel;
