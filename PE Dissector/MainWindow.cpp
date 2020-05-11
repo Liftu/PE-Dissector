@@ -31,6 +31,8 @@ void MainWindow::actionClose_File_triggered()
 	disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_List_View_triggered(bool)));
 	disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_Hex_View_triggered(bool)));
 
+	// Remove the tree root item otherwise it won't if it's the last file.
+	ui.treeView->takeTopLevelItem(0);
 	// Delete the widget of a tab when removing a tab.
 	QWidget* tabContent = ui.tabManager->widget(ui.tabManager->currentIndex());
 	ui.tabManager->removeTab(ui.tabManager->currentIndex());
@@ -52,17 +54,16 @@ void MainWindow::tabManager_currentChanged(int tabIndex)
 	qDebug() << "tab changed, current = " << tabIndex;
 	if (tabIndex >= 0)
 	{
-		//disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), 0, 0);
-		//disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), 0, 0);
-		//connect(ui.actionToggle_List_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_List_View_triggered(bool)));
-		//connect(ui.actionToggle_Hex_View, SIGNAL(toggled(bool)), ui.tabManager->widget(tabIndex), SLOT(actionToggle_Hex_View_triggered(bool)));
-		//updateTreeView();
+		updateTreeView(((QTabContent*)ui.tabManager->widget(tabIndex))->getTreeRootItem());
 	}
 }
 
 void MainWindow::treeView_selectionChanged()
 {
-	qDebug() << "toto";
+	if (ui.treeView->currentItem())
+	{
+		qDebug() << "treeView selection changed : " << ui.treeView->currentItem()->text(0);
+	}
 }
 
 bool MainWindow::addFile(QString filename)
@@ -98,7 +99,7 @@ bool MainWindow::addFile(QString filename)
 	statusBarLabel->setText(QFileInfo(filename).fileName() + QString(" successfully loaded"));
 
 	// Get the List View and Hex View and put them in a new tab.
-	QTabContent* tabContent = new QTabContent(peHeaders32, ui.actionToggle_List_View->isChecked(), ui.actionToggle_Hex_View->isChecked());
+	QTabContent* tabContent = new QTabContent(filename, peHeaders32, ui.actionToggle_List_View->isChecked(), ui.actionToggle_Hex_View->isChecked());
 	connect(ui.actionToggle_List_View, SIGNAL(toggled(bool)), tabContent, SLOT(actionToggle_List_View_triggered(bool)));
 	connect(ui.actionToggle_Hex_View, SIGNAL(toggled(bool)), tabContent, SLOT(actionToggle_Hex_View_triggered(bool)));
 	ui.tabManager->setCurrentIndex(ui.tabManager->addTab(tabContent, QFileInfo(filename).fileName()));
@@ -110,21 +111,17 @@ bool MainWindow::addFile(QString filename)
 	ui.actionToggle_List_View->setEnabled(true);
 	ui.actionToggle_Hex_View->setEnabled(true);
 
-	//updateTreeView(peHeaders32);
-
 	CloseHandle(hFile);
 	return true;
 }
 
-void MainWindow::updateTreeView(PPE_HEADERS32 peHeaders)
+void MainWindow::updateTreeView(QTreeWidgetItem* treeRootItem)
 {
+	qDebug() << "treeView update";
 	ui.treeView->setColumnCount(0);
 	ui.treeView->setHeaderLabels(QStringList("Header"));
-	QList<QTreeWidgetItem*> treeItems;
-	for (int i = 0; i < 10; ++i)
-	{
-		treeItems.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString("item: %1").arg(i))));
-	}
-	ui.treeView->insertTopLevelItems(0, treeItems);
+	ui.treeView->takeTopLevelItem(0);
+	ui.treeView->addTopLevelItem(treeRootItem);
+	ui.treeView->expandAll();
 }
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QtWidgets/qwidget.h>
+#include <QtWidgets/qfiledialog.h>
+#include <QtWidgets/qtreewidget.h>
 #include <QtWidgets/qlayout.h>
 #include <QtWidgets/qtablewidget.h>
 #include <QtWidgets/qlabel.h>
@@ -14,18 +16,24 @@ class QTabContent : public QWidget
 	Q_OBJECT
 
 public:
-	QTabContent(PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
+	QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
 	~QTabContent();
+	PPE_HEADERS32 getPEHeaders();
+	QTreeWidgetItem* getTreeRootItem();
 
 public slots:
 	void actionToggle_List_View_triggered(bool triggered);
 	void actionToggle_Hex_View_triggered(bool triggered);
 
 private:
+	void constructTreeRootItem();
+
+	QString filename;
+	PPE_HEADERS32 peHeaders;
+	QTreeWidgetItem* treeRootItem;
 	QHBoxLayout* hBoxLayout;
 	QTableWidget* listView;
-	QLabel* hexView;
 	// There will be a hex view
-	PE_HEADERS32 peHeaders;
+	QLabel* hexView;
 };
 

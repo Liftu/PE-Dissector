@@ -40,7 +40,7 @@ public slots:
 
 private:
 	bool addFile(QString filename);
-	void updateTreeView(PPE_HEADERS32 peHeaders);
+	void updateTreeView(QTreeWidgetItem* treeRootItem);
 
 	Ui::MainWindowClass ui;
 	QLabel* statusBarLabel;
