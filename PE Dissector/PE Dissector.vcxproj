@@ -83,7 +83,18 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="PE Dissector.c" />
-    <ClCompile Include="QHexView.cpp" />
+    <ClCompile Include="QHexView\document\buffer\qhexbuffer.cpp" />
+    <ClCompile Include="QHexView\document\buffer\qmemorybuffer.cpp" />
+    <ClCompile Include="QHexView\document\buffer\qmemoryrefbuffer.cpp" />
+    <ClCompile Include="QHexView\document\commands\hexcommand.cpp" />
+    <ClCompile Include="QHexView\document\commands\insertcommand.cpp" />
+    <ClCompile Include="QHexView\document\commands\removecommand.cpp" />
+    <ClCompile Include="QHexView\document\commands\replacecommand.cpp" />
+    <ClCompile Include="QHexView\document\qhexcursor.cpp" />
+    <ClCompile Include="QHexView\document\qhexdocument.cpp" />
+    <ClCompile Include="QHexView\document\qhexmetadata.cpp" />
+    <ClCompile Include="QHexView\document\qhexrenderer.cpp" />
+    <ClCompile Include="QHexView\qhexview.cpp" />
     <ClCompile Include="QTabContent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +108,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PE Dissector.h" />
-    <ClInclude Include="QHexView.h" />
+    <QtMoc Include="QHexView\document\qhexcursor.h" />
+    <QtMoc Include="QHexView\document\qhexdocument.h" />
+    <QtMoc Include="QHexView\document\qhexmetadata.h" />
+    <QtMoc Include="QHexView\document\qhexrenderer.h" />
+    <QtMoc Include="QHexView\document\buffer\qhexbuffer.h" />
+    <QtMoc Include="QHexView\document\buffer\qmemorybuffer.h" />
+    <QtMoc Include="QHexView\document\buffer\qmemoryrefbuffer.h" />
+    <ClInclude Include="QHexView\document\commands\hexcommand.h" />
+    <ClInclude Include="QHexView\document\commands\insertcommand.h" />
+    <ClInclude Include="QHexView\document\commands\removecommand.h" />
+    <ClInclude Include="QHexView\document\commands\replacecommand.h" />
+    <QtMoc Include="QHexView\qhexview.h" />
     <QtMoc Include="QTabContent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

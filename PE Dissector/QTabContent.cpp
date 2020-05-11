@@ -9,7 +9,6 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 	hBoxLayout = new QHBoxLayout();
 	listView = new QTableWidget(3,3);
 	hexView = new QHexView();
-	hexView->setData(new QHexView::DataStorageFile(filename));
 	hBoxLayout->addWidget(listView);
 	hBoxLayout->addWidget(hexView);
 	hBoxLayout->setContentsMargins(0, 0, 0, 0);

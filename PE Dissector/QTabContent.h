@@ -10,7 +10,7 @@
 
 extern "C" typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
 #include "PE Dissector.h"
-#include "QHexView.h"
+#include "QHexView/qhexview.h"
 
 class QTabContent : public QWidget
 {
