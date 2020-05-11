@@ -82,5 +82,47 @@ void QTabContent::constructTreeRootItem()
 	treeSectionHeadersItem->setText(0, "Section Headers");
 	treeRootItem->addChild(treeSectionHeadersItem);
 
+	// Export Directory
+	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress > 0)
+	{
+		QTreeWidgetItem* treeExportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		treeExportDirecotryItem->setText(0, "Export Directory");
+		treeRootItem->addChild(treeExportDirecotryItem);
+	}
+
+	// Import Directory
+	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress > 0)
+	{
+		QTreeWidgetItem* treeImportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		treeImportDirecotryItem->setText(0, "Import Directory");
+		treeRootItem->addChild(treeImportDirecotryItem);
+		// Import Descriptors
+		// if ()
+	}
+
+	// Resource Directory
+	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress > 0)
+	{
+		QTreeWidgetItem* treeResourceDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		treeResourceDirecotryItem->setText(0, "Resource Directory");
+		treeRootItem->addChild(treeResourceDirecotryItem);
+	}
+
+	// Debug Directory
+	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress > 0)
+	{
+		QTreeWidgetItem* treeDebugDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		treeDebugDirecotryItem->setText(0, "Debug Directory");
+		treeRootItem->addChild(treeDebugDirecotryItem);
+	}
+
+	// TLS Directory
+	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress > 0)
+	{
+		QTreeWidgetItem* treeTLSDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		treeTLSDirecotryItem->setText(0, "TLS Directory");
+		treeRootItem->addChild(treeTLSDirecotryItem);
+	}
+
 	// More to come
 }
