@@ -35,6 +35,7 @@ public:
 public slots:
 	void actionOpen_File_triggered();
 	void actionClose_File_triggered();
+	void actionOld_Windows_Theme_toggled(bool checked);
 	void tabManager_currentChanged(int tabIndex);
 	void treeView_selectionChanged();
 

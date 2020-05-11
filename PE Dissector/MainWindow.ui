@@ -94,8 +94,15 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionOld_Windows_Theme"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
+   <addaction name="menuSettings"/>
    <addaction name="menu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -233,6 +240,18 @@
     <string>Exit</string>
    </property>
   </action>
+  <action name="actionOld_Windows_Theme">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/MainWindow/Resources/UI_16x.png</normaloff>:/MainWindow/Resources/UI_16x.png</iconset>
+   </property>
+   <property name="text">
+    <string>Old Windows Theme</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -319,6 +338,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionOld_Windows_Theme</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindowClass</receiver>
+   <slot>actionOld_Windows_Theme_toggled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>treeView_selectionChanged()</slot>
@@ -328,5 +363,6 @@
   <slot>actionSave_As_triggered()</slot>
   <slot>actionSave_All_triggered()</slot>
   <slot>tabManager_currentChanged(int)</slot>
+  <slot>actionOld_Windows_Theme_toggled(bool)</slot>
  </slots>
 </ui>

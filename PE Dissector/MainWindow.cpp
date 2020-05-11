@@ -50,6 +50,14 @@ void MainWindow::actionClose_File_triggered()
 	}
 }
 
+void MainWindow::actionOld_Windows_Theme_toggled(bool checked)
+{
+	if (checked)
+		qApp->setStyle("windows");
+	else
+		qApp->setStyle("windowsvista");
+}
+
 void MainWindow::tabManager_currentChanged(int tabIndex)
 {
 	qDebug() << "tab changed, current = " << tabIndex;

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="MainWindow">
+    <file>Resources/UI_16x.png</file>
     <file>Resources/PageHeader_blue_16x.png</file>
     <file>Resources/FileDLL_16x.png</file>
     <file>Resources/FileEXE_16x.png</file>
