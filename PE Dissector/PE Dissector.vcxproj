@@ -83,6 +83,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="PE Dissector.c" />
+    <ClCompile Include="QHexView.cpp" />
     <ClCompile Include="QTabContent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PE Dissector.h" />
+    <ClInclude Include="QHexView.h" />
     <QtMoc Include="QTabContent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -11,6 +11,9 @@
     <ClCompile Include="QTabContent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QHexView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -54,6 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PE Dissector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QHexView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
