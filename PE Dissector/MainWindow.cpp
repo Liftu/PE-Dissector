@@ -33,6 +33,7 @@ void MainWindow::actionClose_File_triggered()
 
 	// Remove the tree root item otherwise it won't if it's the last file.
 	ui.treeView->takeTopLevelItem(0);
+	ui.treeView->setColumnCount(0);
 	// Delete the widget of a tab when removing a tab.
 	QWidget* tabContent = ui.tabManager->widget(ui.tabManager->currentIndex());
 	ui.tabManager->removeTab(ui.tabManager->currentIndex());

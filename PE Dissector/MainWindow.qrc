@@ -1,5 +1,11 @@
 <RCC>
   <qresource prefix="MainWindow">
+    <file>Resources/PageHeader_blue_16x.png</file>
+    <file>Resources/FileDLL_16x.png</file>
+    <file>Resources/FileEXE_16x.png</file>
+    <file>Resources/FileSCR_16x.png</file>
+    <file>Resources/FolderClosed_16x.png</file>
+    <file>Resources/PageHeader_16x.png</file>
     <file>Resources/BinaryFile_16x.png</file>
     <file>Resources/OpenFolder_16x.png</file>
     <file>Resources/BalanceBrace_16x.png</file>

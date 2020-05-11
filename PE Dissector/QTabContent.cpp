@@ -49,37 +49,63 @@ void QTabContent::actionToggle_Hex_View_triggered(bool triggered)
 
 void QTabContent::constructTreeRootItem()
 {
+	qDebug() << "Contructing tree root item";
+	QIcon exeFileIcon = QIcon(":/MainWindow/Resources/FileEXE_16x.png");
+	QIcon dllFileIcon = QIcon(":/MainWindow/Resources/FileDLL_16x.png");
+	QIcon scrFileIcon = QIcon(":/MainWindow/Resources/FileSCR_16x.png");
+	QIcon headerIcon = QIcon(":/MainWindow/Resources/PageHeader_blue_16x.png");
+	QIcon folderIcon = QIcon(":/MainWindow/Resources/FolderClosed_16x.png");
+
+
 	treeRootItem = new QTreeWidgetItem();
 	treeRootItem->setText(0, QFileInfo(filename).fileName());
+	if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("exe"), Qt::CaseInsensitive))
+	{
+		treeRootItem->setIcon(0, exeFileIcon);
+	}
+	else if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("scr"), Qt::CaseInsensitive))
+	{
+		treeRootItem->setIcon(0, scrFileIcon);
+	}
+	else
+	{
+		treeRootItem->setIcon(0, dllFileIcon);
+	}
 
 	// DOS Header
 	QTreeWidgetItem* treeDOSHeaderItem = new QTreeWidgetItem();// treeRootItem);
 	treeDOSHeaderItem->setText(0, "DOS Header");
+	treeDOSHeaderItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeDOSHeaderItem);
 
 	// NT Headers
 	QTreeWidgetItem* treeNTHeadersItem = new QTreeWidgetItem();// treeRootItem);
 	treeNTHeadersItem->setText(0, "NT Headers");
+	treeNTHeadersItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeNTHeadersItem);
 
 	// File Header
 	QTreeWidgetItem* treeFileHeaderItem = new QTreeWidgetItem();// treeNTHeadersItem);
 	treeFileHeaderItem->setText(0, "File Header");
+	treeFileHeaderItem->setIcon(0, headerIcon);
 	treeNTHeadersItem->addChild(treeFileHeaderItem);
 
 	// Optional Header
 	QTreeWidgetItem* treeOptionalHeaderItem = new QTreeWidgetItem();// treeNTHeadersItem);
 	treeOptionalHeaderItem->setText(0, "Optional Header");
+	treeOptionalHeaderItem->setIcon(0, headerIcon);
 	treeNTHeadersItem->addChild(treeOptionalHeaderItem);
 
 	// Data Directories
 	QTreeWidgetItem* treeDataDirectoriesItem = new QTreeWidgetItem();// treeOptionalHeaderItem);
 	treeDataDirectoriesItem->setText(0, "Data Directories");
+	treeDataDirectoriesItem->setIcon(0, headerIcon);
 	treeOptionalHeaderItem->addChild(treeDataDirectoriesItem);
 
 	// Section Headers
 	QTreeWidgetItem* treeSectionHeadersItem = new QTreeWidgetItem();// treeRootItem);
 	treeSectionHeadersItem->setText(0, "Section Headers");
+	treeSectionHeadersItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeSectionHeadersItem);
 
 	// Export Directory
@@ -87,6 +113,7 @@ void QTabContent::constructTreeRootItem()
 	{
 		QTreeWidgetItem* treeExportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
 		treeExportDirecotryItem->setText(0, "Export Directory");
+		treeExportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeExportDirecotryItem);
 	}
 
@@ -95,6 +122,7 @@ void QTabContent::constructTreeRootItem()
 	{
 		QTreeWidgetItem* treeImportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
 		treeImportDirecotryItem->setText(0, "Import Directory");
+		treeImportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeImportDirecotryItem);
 		// Import Descriptors
 		// if ()
@@ -105,6 +133,7 @@ void QTabContent::constructTreeRootItem()
 	{
 		QTreeWidgetItem* treeResourceDirecotryItem = new QTreeWidgetItem();// treeRootItem);
 		treeResourceDirecotryItem->setText(0, "Resource Directory");
+		treeResourceDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeResourceDirecotryItem);
 	}
 
@@ -113,6 +142,7 @@ void QTabContent::constructTreeRootItem()
 	{
 		QTreeWidgetItem* treeDebugDirecotryItem = new QTreeWidgetItem();// treeRootItem);
 		treeDebugDirecotryItem->setText(0, "Debug Directory");
+		treeDebugDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeDebugDirecotryItem);
 	}
 
@@ -121,6 +151,7 @@ void QTabContent::constructTreeRootItem()
 	{
 		QTreeWidgetItem* treeTLSDirecotryItem = new QTreeWidgetItem();// treeRootItem);
 		treeTLSDirecotryItem->setText(0, "TLS Directory");
+		treeTLSDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeTLSDirecotryItem);
 	}
 
