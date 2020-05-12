@@ -107,6 +107,7 @@
     <QtRcc Include="MainWindow.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HeaderMembers.h" />
     <ClInclude Include="PE Dissector.h" />
     <QtMoc Include="QHexView\document\qhexcursor.h" />
     <QtMoc Include="QHexView\document\qhexdocument.h" />

@@ -6,18 +6,16 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 	this->peHeaders = peHeaders;
 	constructTreeRootItem();
 
-	hBoxLayout = new QHBoxLayout();
-
 	listView = new QTableWidget(0, 0, this);
 
 	hexView = new QHexView(this);
 	hexView->setReadOnly(true);
-
 	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(this->filename, hexView);
 	hexView->setDocument(hexDocument);
 	hexMetadata = hexDocument->metadata();
 	hexMetadata->clear();
 
+	hBoxLayout = new QHBoxLayout();
 	hBoxLayout->addWidget(listView);
 	hBoxLayout->addWidget(hexView);
 	hBoxLayout->setContentsMargins(0, 0, 0, 0);
@@ -69,17 +67,11 @@ void QTabContent::constructTreeRootItem()
 	treeRootItem = new QTreeWidgetItem(TREE_ITEM_TYPE_BASE_IMAGE);
 	treeRootItem->setText(0, QFileInfo(filename).fileName());
 	if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("exe"), Qt::CaseInsensitive))
-	{
 		treeRootItem->setIcon(0, exeFileIcon);
-	}
 	else if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("scr"), Qt::CaseInsensitive))
-	{
 		treeRootItem->setIcon(0, scrFileIcon);
-	}
 	else
-	{
 		treeRootItem->setIcon(0, dllFileIcon);
-	}
 
 	// DOS Header
 	QTreeWidgetItem* treeDOSHeaderItem = new QTreeWidgetItem(TREE_ITEM_TYPE_DOS_HEADER);// treeRootItem);
@@ -169,12 +161,16 @@ void QTabContent::constructTreeRootItem()
 
 void QTabContent::constructListView(int treeItemType)
 {
+	qDebug() << "construct List View, type : " << treeItemType;
+
+	listView->clear();
 	switch (treeItemType)
 	{
 	case TREE_ITEM_TYPE_BASE_IMAGE:
 		break;
 
 	case TREE_ITEM_TYPE_DOS_HEADER:
+		constructListViewDOSHeader();
 		break;
 
 	case TREE_ITEM_TYPE_NTS_HEADERS:
@@ -212,47 +208,68 @@ void QTabContent::constructListView(int treeItemType)
 	}
 }
 
-void QTabContent::constructDOSHeader()
+void QTabContent::constructListViewFileInfos()
 {
 }
 
-void QTabContent::constructNTHeaders()
+void QTabContent::constructListViewDOSHeader()
+{
+
+
+	listView->setColumnCount(4);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	int offset = 0;
+	for (int i = 0; dosHeaderMembers[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(dosHeaderMembers[i].name)));			// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));						// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));		// Size
+		listView->setItem(i, 3, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));		// Value
+
+		offset += dosHeaderMembers[i].size;
+	}
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
+}
+
+void QTabContent::constructListViewNTHeaders()
 {
 }
 
-void QTabContent::constructFileHeader()
+void QTabContent::constructListViewFileHeader()
 {
 }
 
-void QTabContent::constructOptionalHeader()
+void QTabContent::constructListViewOptionalHeader()
 {
 }
 
-void QTabContent::constructDataDirectories()
+void QTabContent::constructListViewDataDirectories()
 {
 }
 
-void QTabContent::constructSectionHeader()
+void QTabContent::constructListViewSectionHeader()
 {
 }
 
-void QTabContent::constructExportDirectory()
+void QTabContent::constructListViewExportDirectory()
 {
 }
 
-void QTabContent::constructImportDirectory()
+void QTabContent::constructListViewImportDirectory()
 {
 }
 
-void QTabContent::constructResourceDirectory()
+void QTabContent::constructListViewResourceDirectory()
 {
 }
 
-void QTabContent::constructDebugDirectory()
+void QTabContent::constructListViewDebugDirectory()
 {
 }
 
-void QTabContent::constructTLSDirectory()
+void QTabContent::constructListViewTLSDirectory()
 {
 }
 

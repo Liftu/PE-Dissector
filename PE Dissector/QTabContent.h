@@ -5,11 +5,13 @@
 #include <QtWidgets/qtreewidget.h>
 #include <QtWidgets/qlayout.h>
 #include <QtWidgets/qtablewidget.h>
+#include <QtWidgets/qheaderview.h>
 #include <QtWidgets/qlabel.h>
 #include <QtCore/qdebug.h>
 
 extern "C" typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
 #include "PE Dissector.h"
+#include "HeaderMembers.h"
 #include "QHexView/qhexview.h"
 #include "QHexView/document/buffer/qmemorybuffer.h"
 
@@ -43,21 +45,22 @@ public:
 public slots:
 	void actionToggle_List_View_triggered(bool triggered);
 	void actionToggle_Hex_View_triggered(bool triggered);
+	void constructListView(int treeItemType);
 
 private:
 	void constructTreeRootItem();
-	void constructListView(int treeItemType);
-	void constructDOSHeader();
-	void constructNTHeaders();
-	void constructFileHeader();
-	void constructOptionalHeader();
-	void constructDataDirectories();
-	void constructSectionHeader();
-	void constructExportDirectory();
-	void constructImportDirectory();
-	void constructResourceDirectory();
-	void constructDebugDirectory();
-	void constructTLSDirectory();
+	void constructListViewFileInfos();
+	void constructListViewDOSHeader();
+	void constructListViewNTHeaders();
+	void constructListViewFileHeader();
+	void constructListViewOptionalHeader();
+	void constructListViewDataDirectories();
+	void constructListViewSectionHeader();
+	void constructListViewExportDirectory();
+	void constructListViewImportDirectory();
+	void constructListViewResourceDirectory();
+	void constructListViewDebugDirectory();
+	void constructListViewTLSDirectory();
 
 	QString filename;
 	PPE_HEADERS32 peHeaders;
@@ -68,4 +71,3 @@ private:
 	QHexDocument* hexDocument;
 	QHexMetadata* hexMetadata;
 };
-

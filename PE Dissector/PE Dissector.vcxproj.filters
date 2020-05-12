@@ -152,5 +152,8 @@
     <ClInclude Include="QHexView\document\commands\replacecommand.h">
       <Filter>Header Files\QHexView\Document\commands</Filter>
     </ClInclude>
+    <ClInclude Include="HeaderMembers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
