@@ -104,7 +104,7 @@ void QTabContent::constructTreeRootItem()
 	treeOptionalHeaderItem->addChild(treeDataDirectoriesItem);
 
 	// Section Headers
-	QTreeWidgetItem* treeSectionHeadersItem = new QTreeWidgetItem(TREE_ITEM_TYPE_SECTION_HEADERS);// treeRootItem);
+	QTreeWidgetItem* treeSectionHeadersItem = new QTreeWidgetItem(TREE_ITEM_TYPE_SECTION_HEADER);// treeRootItem);
 	treeSectionHeadersItem->setText(0, "Section Headers");
 	treeSectionHeadersItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeSectionHeadersItem);
@@ -167,6 +167,7 @@ void QTabContent::constructListView(int treeItemType)
 	switch (treeItemType)
 	{
 	case TREE_ITEM_TYPE_BASE_IMAGE:
+		constructListViewFileInfos();
 		break;
 
 	case TREE_ITEM_TYPE_DOS_HEADER:
@@ -174,18 +175,23 @@ void QTabContent::constructListView(int treeItemType)
 		break;
 
 	case TREE_ITEM_TYPE_NTS_HEADERS:
+		constructListViewNTHeaders();
 		break;
 
 	case TREE_ITEM_TYPE_FILE_HEADER:
+		constructListViewFileHeader();
 		break;
 
 	case TREE_ITEM_TYPE_OPTIONAL_HEADER:
+		constructListViewOptionalHeader();
 		break;
 
 	case TREE_ITEM_TYPE_DATA_DIRECTORIES:
+		constructListViewDataDirectories();
 		break;
 
-	case TREE_ITEM_TYPE_SECTION_HEADERS:
+	case TREE_ITEM_TYPE_SECTION_HEADER:
+		constructListViewSectionHeader();
 		break;
 
 	case TREE_ITEM_TYPE_EXPORT_DIRECTORY:
@@ -210,15 +216,24 @@ void QTabContent::constructListView(int treeItemType)
 
 void QTabContent::constructListViewFileInfos()
 {
+	listView->setColumnCount(2);
+	listView->setHorizontalHeaderLabels(QStringList() << "" << "Value");
+	listView->setRowCount(5);
+	listView->verticalHeader()->hide();
+	//listView->setVerticalHeaderLabels(QStringList() << "File Path" << "File Type" << "File Size" << "Created" << "MD5");
+	listView->setItem(0, 0, new QTableWidgetItem(QString("File Path")));
+	listView->setItem(1, 0, new QTableWidgetItem(QString("File Type")));
+	listView->setItem(2, 0, new QTableWidgetItem(QString("File Size")));
+	listView->setItem(3, 0, new QTableWidgetItem(QString("Created")));
+	listView->setItem(4, 0, new QTableWidgetItem(QString("MD5")));
 }
 
 void QTabContent::constructListViewDOSHeader()
 {
-
-
-	listView->setColumnCount(4);
+	listView->setColumnCount(5);
 	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
 
+	listView->setRowCount(0);
 	int offset = 0;
 	for (int i = 0; dosHeaderMembers[i].size; i++)
 	{
@@ -226,7 +241,7 @@ void QTabContent::constructListViewDOSHeader()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(dosHeaderMembers[i].name)));			// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));						// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));		// Size
-		listView->setItem(i, 3, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));		// Value
+		listView->setItem(i, 3, new QTableWidgetItem(QString("")));									// Value
 
 		offset += dosHeaderMembers[i].size;
 	}
@@ -235,18 +250,82 @@ void QTabContent::constructListViewDOSHeader()
 
 void QTabContent::constructListViewNTHeaders()
 {
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	listView->setRowCount(0);
+	int offset = 0;
+	for (int i = 0; ntHeadersMembers[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(ntHeadersMembers[i].name)));			// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));						// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(ntHeadersMembers[i].sizeTitle)));		// Size
+		listView->setItem(i, 3, new QTableWidgetItem(QString("")));									// Value
+
+		offset += ntHeadersMembers[i].size;
+	}
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewFileHeader()
 {
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	listView->setRowCount(0);
+	int offset = 0;
+	for (int i = 0; fileHeaderMembers[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(fileHeaderMembers[i].name)));			// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));						// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(fileHeaderMembers[i].sizeTitle)));		// Size
+		listView->setItem(i, 3, new QTableWidgetItem(QString("")));									// Value
+
+		offset += fileHeaderMembers[i].size;
+	}
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewOptionalHeader()
 {
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	listView->setRowCount(0);
+	int offset = 0;
+	for (int i = 0; optionalHeader32Members[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(optionalHeader32Members[i].name)));		// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));							// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(optionalHeader32Members[i].sizeTitle)));	// Size
+		listView->setItem(i, 3, new QTableWidgetItem(QString("")));										// Value
+
+		offset += optionalHeader32Members[i].size;
+	}
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewDataDirectories()
 {
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	listView->setRowCount(0);
+	int offset = 0;
+	for (int i = 0; dataDirectoriesMembers[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(dataDirectoriesMembers[i].name)));			// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));							// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(dataDirectoriesMembers[i].sizeTitle)));	// Size
+		listView->setItem(i, 3, new QTableWidgetItem(QString("")));										// Value
+
+		offset += dataDirectoriesMembers[i].size;
+	}
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewSectionHeader()
