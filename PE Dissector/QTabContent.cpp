@@ -8,12 +8,12 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 
 	hBoxLayout = new QHBoxLayout();
 
-	listView = new QTableWidget(3,3);
+	listView = new QTableWidget(0, 0, this);
 
 	hexView = new QHexView(this);
 	hexView->setReadOnly(true);
 
-	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(filename, hexView);
+	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(this->filename, hexView);
 	hexView->setDocument(hexDocument);
 	hexMetadata = hexDocument->metadata();
 	hexMetadata->clear();
@@ -66,7 +66,7 @@ void QTabContent::constructTreeRootItem()
 	QIcon folderIcon = QIcon(":/MainWindow/Resources/FolderClosed_16x.png");
 
 
-	treeRootItem = new QTreeWidgetItem();
+	treeRootItem = new QTreeWidgetItem(TREE_ITEM_TYPE_BASE_IMAGE);
 	treeRootItem->setText(0, QFileInfo(filename).fileName());
 	if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("exe"), Qt::CaseInsensitive))
 	{
@@ -82,37 +82,37 @@ void QTabContent::constructTreeRootItem()
 	}
 
 	// DOS Header
-	QTreeWidgetItem* treeDOSHeaderItem = new QTreeWidgetItem();// treeRootItem);
+	QTreeWidgetItem* treeDOSHeaderItem = new QTreeWidgetItem(TREE_ITEM_TYPE_DOS_HEADER);// treeRootItem);
 	treeDOSHeaderItem->setText(0, "DOS Header");
 	treeDOSHeaderItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeDOSHeaderItem);
 
 	// NT Headers
-	QTreeWidgetItem* treeNTHeadersItem = new QTreeWidgetItem();// treeRootItem);
+	QTreeWidgetItem* treeNTHeadersItem = new QTreeWidgetItem(TREE_ITEM_TYPE_NTS_HEADERS);// treeRootItem);
 	treeNTHeadersItem->setText(0, "NT Headers");
 	treeNTHeadersItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeNTHeadersItem);
 
 	// File Header
-	QTreeWidgetItem* treeFileHeaderItem = new QTreeWidgetItem();// treeNTHeadersItem);
+	QTreeWidgetItem* treeFileHeaderItem = new QTreeWidgetItem(TREE_ITEM_TYPE_FILE_HEADER);// treeNTHeadersItem);
 	treeFileHeaderItem->setText(0, "File Header");
 	treeFileHeaderItem->setIcon(0, headerIcon);
 	treeNTHeadersItem->addChild(treeFileHeaderItem);
 
 	// Optional Header
-	QTreeWidgetItem* treeOptionalHeaderItem = new QTreeWidgetItem();// treeNTHeadersItem);
+	QTreeWidgetItem* treeOptionalHeaderItem = new QTreeWidgetItem(TREE_ITEM_TYPE_OPTIONAL_HEADER);// treeNTHeadersItem);
 	treeOptionalHeaderItem->setText(0, "Optional Header");
 	treeOptionalHeaderItem->setIcon(0, headerIcon);
 	treeNTHeadersItem->addChild(treeOptionalHeaderItem);
 
 	// Data Directories
-	QTreeWidgetItem* treeDataDirectoriesItem = new QTreeWidgetItem();// treeOptionalHeaderItem);
+	QTreeWidgetItem* treeDataDirectoriesItem = new QTreeWidgetItem(TREE_ITEM_TYPE_DATA_DIRECTORIES);// treeOptionalHeaderItem);
 	treeDataDirectoriesItem->setText(0, "Data Directories");
 	treeDataDirectoriesItem->setIcon(0, headerIcon);
 	treeOptionalHeaderItem->addChild(treeDataDirectoriesItem);
 
 	// Section Headers
-	QTreeWidgetItem* treeSectionHeadersItem = new QTreeWidgetItem();// treeRootItem);
+	QTreeWidgetItem* treeSectionHeadersItem = new QTreeWidgetItem(TREE_ITEM_TYPE_SECTION_HEADERS);// treeRootItem);
 	treeSectionHeadersItem->setText(0, "Section Headers");
 	treeSectionHeadersItem->setIcon(0, headerIcon);
 	treeRootItem->addChild(treeSectionHeadersItem);
@@ -120,7 +120,7 @@ void QTabContent::constructTreeRootItem()
 	// Export Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeExportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		QTreeWidgetItem* treeExportDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_EXPORT_DIRECTORY);// treeRootItem);
 		treeExportDirecotryItem->setText(0, "Export Directory");
 		treeExportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeExportDirecotryItem);
@@ -129,7 +129,7 @@ void QTabContent::constructTreeRootItem()
 	// Import Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeImportDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		QTreeWidgetItem* treeImportDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_IMPORT_DIRECTORY);// treeRootItem);
 		treeImportDirecotryItem->setText(0, "Import Directory");
 		treeImportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeImportDirecotryItem);
@@ -140,7 +140,7 @@ void QTabContent::constructTreeRootItem()
 	// Resource Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeResourceDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		QTreeWidgetItem* treeResourceDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_RESOURCE_DIRECTORY);// treeRootItem);
 		treeResourceDirecotryItem->setText(0, "Resource Directory");
 		treeResourceDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeResourceDirecotryItem);
@@ -149,7 +149,7 @@ void QTabContent::constructTreeRootItem()
 	// Debug Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeDebugDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		QTreeWidgetItem* treeDebugDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_DEBUG_DIRECTORY);// treeRootItem);
 		treeDebugDirecotryItem->setText(0, "Debug Directory");
 		treeDebugDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeDebugDirecotryItem);
@@ -158,7 +158,7 @@ void QTabContent::constructTreeRootItem()
 	// TLS Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeTLSDirecotryItem = new QTreeWidgetItem();// treeRootItem);
+		QTreeWidgetItem* treeTLSDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_TLS_DIRECTORY);// treeRootItem);
 		treeTLSDirecotryItem->setText(0, "TLS Directory");
 		treeTLSDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeTLSDirecotryItem);
@@ -166,3 +166,93 @@ void QTabContent::constructTreeRootItem()
 
 	// More to come
 }
+
+void QTabContent::constructListView(int treeItemType)
+{
+	switch (treeItemType)
+	{
+	case TREE_ITEM_TYPE_BASE_IMAGE:
+		break;
+
+	case TREE_ITEM_TYPE_DOS_HEADER:
+		break;
+
+	case TREE_ITEM_TYPE_NTS_HEADERS:
+		break;
+
+	case TREE_ITEM_TYPE_FILE_HEADER:
+		break;
+
+	case TREE_ITEM_TYPE_OPTIONAL_HEADER:
+		break;
+
+	case TREE_ITEM_TYPE_DATA_DIRECTORIES:
+		break;
+
+	case TREE_ITEM_TYPE_SECTION_HEADERS:
+		break;
+
+	case TREE_ITEM_TYPE_EXPORT_DIRECTORY:
+		break;
+
+	case TREE_ITEM_TYPE_IMPORT_DIRECTORY:
+		break;
+
+	case TREE_ITEM_TYPE_RESOURCE_DIRECTORY:
+		break;
+
+	case TREE_ITEM_TYPE_DEBUG_DIRECTORY:
+		break;
+
+	case TREE_ITEM_TYPE_TLS_DIRECTORY:
+		break;
+
+	default:
+		break;
+	}
+}
+
+void QTabContent::constructDOSHeader()
+{
+}
+
+void QTabContent::constructNTHeaders()
+{
+}
+
+void QTabContent::constructFileHeader()
+{
+}
+
+void QTabContent::constructOptionalHeader()
+{
+}
+
+void QTabContent::constructDataDirectories()
+{
+}
+
+void QTabContent::constructSectionHeader()
+{
+}
+
+void QTabContent::constructExportDirectory()
+{
+}
+
+void QTabContent::constructImportDirectory()
+{
+}
+
+void QTabContent::constructResourceDirectory()
+{
+}
+
+void QTabContent::constructDebugDirectory()
+{
+}
+
+void QTabContent::constructTLSDirectory()
+{
+}
+

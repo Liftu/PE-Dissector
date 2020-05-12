@@ -23,12 +23,41 @@ public:
 	PPE_HEADERS32 getPEHeaders();
 	QTreeWidgetItem* getTreeRootItem();
 
+	enum
+	{
+		TREE_ITEM_TYPE_BASE_IMAGE = QTreeWidgetItem::UserType,
+		TREE_ITEM_TYPE_DOS_HEADER,
+		TREE_ITEM_TYPE_NTS_HEADERS,
+		TREE_ITEM_TYPE_FILE_HEADER,
+		TREE_ITEM_TYPE_OPTIONAL_HEADER,
+		TREE_ITEM_TYPE_DATA_DIRECTORIES,
+		TREE_ITEM_TYPE_SECTION_HEADERS,
+		TREE_ITEM_TYPE_EXPORT_DIRECTORY,
+		TREE_ITEM_TYPE_IMPORT_DIRECTORY,
+		TREE_ITEM_TYPE_RESOURCE_DIRECTORY,
+		TREE_ITEM_TYPE_DEBUG_DIRECTORY,
+		TREE_ITEM_TYPE_TLS_DIRECTORY,
+
+	};
+
 public slots:
 	void actionToggle_List_View_triggered(bool triggered);
 	void actionToggle_Hex_View_triggered(bool triggered);
 
 private:
 	void constructTreeRootItem();
+	void constructListView(int treeItemType);
+	void constructDOSHeader();
+	void constructNTHeaders();
+	void constructFileHeader();
+	void constructOptionalHeader();
+	void constructDataDirectories();
+	void constructSectionHeader();
+	void constructExportDirectory();
+	void constructImportDirectory();
+	void constructResourceDirectory();
+	void constructDebugDirectory();
+	void constructTLSDirectory();
 
 	QString filename;
 	PPE_HEADERS32 peHeaders;

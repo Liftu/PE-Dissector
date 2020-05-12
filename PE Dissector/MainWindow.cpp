@@ -71,7 +71,7 @@ void MainWindow::treeView_selectionChanged()
 {
 	if (ui.treeView->currentItem())
 	{
-		qDebug() << "treeView selection changed : " << ui.treeView->currentItem()->text(0);
+		qDebug() << "treeView selection changed : " << ui.treeView->currentItem()->text(0) << " | type : " << ui.treeView->currentItem()->type();
 	}
 }
 
