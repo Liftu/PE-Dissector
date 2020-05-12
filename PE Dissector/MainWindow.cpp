@@ -131,6 +131,7 @@ void MainWindow::updateTreeView(QTreeWidgetItem* treeRootItem)
 	ui.treeView->setHeaderLabels(QStringList("Header"));
 	ui.treeView->takeTopLevelItem(0);
 	ui.treeView->addTopLevelItem(treeRootItem);
+	ui.treeView->setCurrentItem(treeRootItem);
 	ui.treeView->expandAll();
 }
 

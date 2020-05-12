@@ -7,8 +7,17 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 	constructTreeRootItem();
 
 	hBoxLayout = new QHBoxLayout();
+
 	listView = new QTableWidget(3,3);
-	hexView = new QHexView();
+
+	hexView = new QHexView(this);
+	hexView->setReadOnly(true);
+
+	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(filename, hexView);
+	hexView->setDocument(hexDocument);
+	hexMetadata = hexDocument->metadata();
+	hexMetadata->clear();
+
 	hBoxLayout->addWidget(listView);
 	hBoxLayout->addWidget(hexView);
 	hBoxLayout->setContentsMargins(0, 0, 0, 0);

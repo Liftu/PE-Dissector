@@ -11,6 +11,7 @@
 extern "C" typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
 #include "PE Dissector.h"
 #include "QHexView/qhexview.h"
+#include "QHexView/document/buffer/qmemorybuffer.h"
 
 class QTabContent : public QWidget
 {
@@ -35,5 +36,7 @@ private:
 	QHBoxLayout* hBoxLayout;
 	QTableWidget* listView;
 	QHexView* hexView;
+	QHexDocument* hexDocument;
+	QHexMetadata* hexMetadata;
 };
 
