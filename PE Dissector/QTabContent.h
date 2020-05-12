@@ -24,6 +24,8 @@ public:
 	~QTabContent();
 	PPE_HEADERS32 getPEHeaders();
 	QTreeWidgetItem* getTreeRootItem();
+	QString getFileName();
+	QString getFileTitle();
 
 	enum
 	{
@@ -62,7 +64,7 @@ private:
 	void constructListViewDebugDirectory();
 	void constructListViewTLSDirectory();
 
-	QString filename;
+	QString fileName;
 	PPE_HEADERS32 peHeaders;
 	QTreeWidgetItem* treeRootItem;
 	QHBoxLayout* hBoxLayout;

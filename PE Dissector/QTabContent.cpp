@@ -2,7 +2,7 @@
 
 QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView)
 {
-	this->filename = filename;
+	this->fileName = filename;
 	this->peHeaders = peHeaders;
 	constructTreeRootItem();
 
@@ -10,7 +10,7 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 
 	hexView = new QHexView(this);
 	hexView->setReadOnly(true);
-	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(this->filename, hexView);
+	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(this->fileName, hexView);
 	hexView->setDocument(hexDocument);
 	hexMetadata = hexDocument->metadata();
 	hexMetadata->clear();
@@ -44,6 +44,16 @@ QTreeWidgetItem * QTabContent::getTreeRootItem()
 	return this->treeRootItem;
 }
 
+QString QTabContent::getFileName()
+{
+	return this->fileName;
+}
+
+QString QTabContent::getFileTitle()
+{
+	return QFileInfo(this->fileName).fileName();
+}
+
 void QTabContent::actionToggle_List_View_triggered(bool triggered)
 {
 	listView->setHidden(!triggered);
@@ -65,10 +75,10 @@ void QTabContent::constructTreeRootItem()
 
 
 	treeRootItem = new QTreeWidgetItem(TREE_ITEM_TYPE_BASE_IMAGE);
-	treeRootItem->setText(0, QFileInfo(filename).fileName());
-	if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("exe"), Qt::CaseInsensitive))
+	treeRootItem->setText(0, QFileInfo(fileName).fileName());
+	if (!QString::compare(QFileInfo(fileName).completeSuffix(), QString("exe"), Qt::CaseInsensitive))
 		treeRootItem->setIcon(0, exeFileIcon);
-	else if (!QString::compare(QFileInfo(filename).completeSuffix(), QString("scr"), Qt::CaseInsensitive))
+	else if (!QString::compare(QFileInfo(fileName).completeSuffix(), QString("scr"), Qt::CaseInsensitive))
 		treeRootItem->setIcon(0, scrFileIcon);
 	else
 		treeRootItem->setIcon(0, dllFileIcon);
@@ -295,6 +305,8 @@ void QTabContent::constructListViewOptionalHeader()
 
 	listView->setRowCount(0);
 	int offset = 0;
+
+	// SHOULD CHECK IF WE HAVE A 64 BITS PE.
 	for (int i = 0; optionalHeader32Members[i].size; i++)
 	{
 		listView->insertRow(i);

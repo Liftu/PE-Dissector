@@ -5,6 +5,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 
+	this->setWindowTitle(QString("PE Dissector"));
+
 	statusBarLabel = new QLabel(QString("No file loaded"), ui.statusBar);
 	ui.statusBar->addWidget(statusBarLabel);
 
@@ -31,11 +33,12 @@ void MainWindow::actionClose_File_triggered()
 	disconnect(ui.actionToggle_List_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_List_View_triggered(bool)));
 	disconnect(ui.actionToggle_Hex_View, SIGNAL(triggered(bool)), ui.tabManager->widget(ui.tabManager->currentIndex()), SLOT(actionToggle_Hex_View_triggered(bool)));
 
+	statusBarLabel->setText(((QTabContent*)ui.tabManager->currentWidget())->getFileTitle() + (" closed"));
 	// Remove the tree root item otherwise it won't if it's the last file.
 	ui.treeView->takeTopLevelItem(0);
 	ui.treeView->setColumnCount(0);
 	// Delete the widget of a tab when removing a tab.
-	QWidget* tabContent = ui.tabManager->widget(ui.tabManager->currentIndex());
+	QWidget* tabContent = ui.tabManager->currentWidget();
 	ui.tabManager->removeTab(ui.tabManager->currentIndex());
 	delete tabContent;
 
@@ -47,6 +50,7 @@ void MainWindow::actionClose_File_triggered()
 		ui.actionSave_All->setEnabled(false);
 		ui.actionToggle_List_View->setEnabled(false);
 		ui.actionToggle_Hex_View->setEnabled(false);
+		this->setWindowTitle(QString("PE Dissector"));
 	}
 }
 
@@ -63,7 +67,8 @@ void MainWindow::tabManager_currentChanged(int tabIndex)
 	qDebug() << "tab changed, current = " << tabIndex;
 	if (tabIndex >= 0)
 	{
-		updateTreeView(((QTabContent*)ui.tabManager->widget(tabIndex))->getTreeRootItem());
+		this->setWindowTitle(QString(((QTabContent*)ui.tabManager->currentWidget())->getFileTitle()) + QString(" - PE Dissector"));
+		updateTreeView(((QTabContent*)ui.tabManager->currentWidget())->getTreeRootItem());
 	}
 }
 
