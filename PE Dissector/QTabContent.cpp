@@ -245,18 +245,34 @@ void QTabContent::constructListViewDOSHeader()
 
 	listView->setRowCount(0);
 	int offset = 0;
+
+	// SHOULD CHECKS IF WE HAVE A 64 BITS PE.
 	for (int i = 0; dosHeaderMembers[i].size; i++)
 	{
 		listView->insertRow(i);
-		listView->setItem(i, 0, new QTableWidgetItem(QString(dosHeaderMembers[i].name)));			// Member
-		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));						// Offset
-		listView->setItem(i, 2, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));		// Size
-		listView->setItem(i, 3, new QTableWidgetItem(QString("")));									// Value
+		listView->setItem(i, 0, new QTableWidgetItem(QString(dosHeaderMembers[i].name)));								// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(offset, 8, 16, QChar('0')).toUpper()));	// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));							// Size
+		// This mess allow me to access the header struct as an array or a memory buffer.
+		switch (dosHeaderMembers[i].size)																				// Value
+		{
+		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((CHAR*)&(peHeaders->dosHeader) + offset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
+		case 2: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(WORD*)((CHAR*)&(peHeaders->dosHeader) + offset), 2 * sizeof(WORD), 16, QChar('0')).toUpper())); break;
+		case 4: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(DWORD*)((CHAR*)&(peHeaders->dosHeader) + offset), 2 * sizeof(DWORD), 16, QChar('0')).toUpper())); break;
+		case 8: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(QWORD*)((CHAR*)&(peHeaders->dosHeader) + offset), 2 * sizeof(QWORD), 16, QChar('0')).toUpper())); break;
+		}
+
+		// WILL ADD MEANING COLUNM CONTENT BELOW
+		//if (QString::compare(dosHeaderMembers[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
+		//else if (QString::compare(dosHeaderMembers[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
 
 		offset += dosHeaderMembers[i].size;
 	}
 	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
+
 
 void QTabContent::constructListViewNTHeaders()
 {
@@ -306,25 +322,27 @@ void QTabContent::constructListViewOptionalHeader()
 	listView->setRowCount(0);
 	int offset = 0;
 
-	// SHOULD CHECK IF WE HAVE A 64 BITS PE.
+	// SHOULD CHECKS IF WE HAVE A 64 BITS PE.
 	for (int i = 0; optionalHeader32Members[i].size; i++)
 	{
 		listView->insertRow(i);
-		listView->setItem(i, 0, new QTableWidgetItem(QString(optionalHeader32Members[i].name)));		// Member
-		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));							// Offset
-		listView->setItem(i, 2, new QTableWidgetItem(QString(optionalHeader32Members[i].sizeTitle)));	// Size
+		listView->setItem(i, 0, new QTableWidgetItem(QString(optionalHeader32Members[i].name)));								// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(offset, 8, 16, QChar('0')).toUpper()));	// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(optionalHeader32Members[i].sizeTitle)));							// Size
 		// This mess allow me to access the header struct as an array or a memory buffer.
-		switch (optionalHeader32Members[i].size)
+		switch (optionalHeader32Members[i].size)																				// Value
 		{
-		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(BYTE*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
-			break;
-		case 2: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(WORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
-			break;
-		case 4: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(DWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
-			break;
-		case 8: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(QWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
-			break;
-		}										// Value
+			case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
+			case 2: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(WORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset), 2 * sizeof(WORD), 16, QChar('0')).toUpper())); break;
+			case 4: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(DWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset), 2 * sizeof(DWORD), 16, QChar('0')).toUpper())); break;
+			case 8: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(QWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset), 2 * sizeof(QWORD), 16, QChar('0')).toUpper())); break;
+		}
+
+		// WILL ADD MEANING COLUNM CONTENT BELOW
+		//if (QString::compare(optionalHeader32Members[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
+		//else if (QString::compare(optionalHeader32Members[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
 
 		offset += optionalHeader32Members[i].size;
 	}
