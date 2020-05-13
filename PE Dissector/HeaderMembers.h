@@ -30,13 +30,13 @@ const headerMember dosHeaderMembers[] = {
 	headerMember{"WORD", sizeof(WORD), "e_oeminfo"},
 	headerMember{"WORD", sizeof(WORD), "e_res2[10]"},
 	headerMember{"DWORD", sizeof(DWORD), "e_lfanew"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // NT HEADERS
 const headerMember ntHeadersMembers[] = { 
 	headerMember{"DWORD", sizeof(DWORD), "Signature"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // FILE HEADER
@@ -48,7 +48,7 @@ const headerMember fileHeaderMembers[] = {
 	headerMember{"DWORD", sizeof(DWORD), "NumberOfSymbols"},
 	headerMember{"WORD", sizeof(WORD), "SizeOfOptionalHeader"},
 	headerMember{"WORD", sizeof(WORD), "Characteristics"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // OPTIONAL HEADER
@@ -83,7 +83,7 @@ const headerMember optionalHeader32Members[] = {
 	headerMember{"DWORD", sizeof(DWORD), "SizeOfHeapCommit"},
 	headerMember{"DWORD", sizeof(DWORD), "LoaderFlags"},
 	headerMember{"DWORD", sizeof(DWORD), "NumberOfRvaAndSizes"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // OPTIONAL HEADER 64
@@ -116,7 +116,7 @@ const headerMember optionalHeader64Members[] = {
 	headerMember{"QWORD", sizeof(QWORD), "SizeOfHeapCommit"},
 	headerMember{"DWORD", sizeof(DWORD), "LoaderFlags"},
 	headerMember{"DWORD", sizeof(DWORD), "NumberOfRvaAndSizes"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // DATA DIRECTORIES
@@ -153,7 +153,7 @@ const headerMember dataDirectoriesMembers[] = {
 	headerMember{"DWORD", sizeof(DWORD), "CLR Runtime Directory Size"},
 	headerMember{"DWORD", sizeof(DWORD), "Reserved"},
 	headerMember{"DWORD", sizeof(DWORD), "Reserved"},
-	headerMember{"", 0, "0"},
+	headerMember{"", 0, ""},
 };
 
 // SECTION HEADER
@@ -168,4 +168,5 @@ const headerMember sectionHeaderMembers[] = {
 	headerMember{"WORD", sizeof(WORD), "NumberOfRelocations"},
 	headerMember{"WORD", sizeof(WORD), "NumberOfLinenumbers"},
 	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
+	headerMember{"", 0, ""},
 };

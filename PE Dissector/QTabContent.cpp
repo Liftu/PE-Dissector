@@ -313,7 +313,18 @@ void QTabContent::constructListViewOptionalHeader()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(optionalHeader32Members[i].name)));		// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString::number(offset)));							// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(optionalHeader32Members[i].sizeTitle)));	// Size
-		listView->setItem(i, 3, new QTableWidgetItem(QString("")));										// Value
+		// This mess allow me to access the header struct as an array or a memory buffer.
+		switch (optionalHeader32Members[i].size)
+		{
+		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(BYTE*)(((CHAR*)&(peHeaders->ntHeaders.OptionalHeader)) + offset))));
+			break;
+		case 2: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(WORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
+			break;
+		case 4: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(DWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
+			break;
+		case 8: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(QWORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
+			break;
+		}										// Value
 
 		offset += optionalHeader32Members[i].size;
 	}
