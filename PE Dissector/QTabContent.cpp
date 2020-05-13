@@ -316,7 +316,7 @@ void QTabContent::constructListViewOptionalHeader()
 		// This mess allow me to access the header struct as an array or a memory buffer.
 		switch (optionalHeader32Members[i].size)
 		{
-		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(BYTE*)(((CHAR*)&(peHeaders->ntHeaders.OptionalHeader)) + offset))));
+		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(BYTE*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
 			break;
 		case 2: listView->setItem(i, 3, new QTableWidgetItem(QString::number(*(WORD*)((CHAR*)&(peHeaders->ntHeaders.OptionalHeader) + offset))));
 			break;
