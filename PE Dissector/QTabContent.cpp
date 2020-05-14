@@ -7,6 +7,7 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 	constructTreeRootItem();
 
 	listView = new QTableWidget(0, 0, this);
+	listView->verticalHeader()->hide(); // Hide first Column which is not used
 
 	hexView = new QHexView(this);
 	hexView->setReadOnly(true);
@@ -225,6 +226,7 @@ void QTabContent::constructListView(int treeItemType)
 	default:
 		break;
 	}
+	listView->verticalHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
 
 void QTabContent::constructListViewFileInfos()
@@ -232,8 +234,6 @@ void QTabContent::constructListViewFileInfos()
 	listView->setColumnCount(2);
 	listView->setHorizontalHeaderLabels(QStringList() << "" << "Value");
 	listView->setRowCount(5);
-	listView->verticalHeader()->hide();
-	//listView->setVerticalHeaderLabels(QStringList() << "File Path" << "File Type" << "File Size" << "Created" << "MD5");
 	listView->setItem(0, 0, new QTableWidgetItem(QString("File Path")));
 	listView->setItem(1, 0, new QTableWidgetItem(QString("File Type")));
 	listView->setItem(2, 0, new QTableWidgetItem(QString("File Size")));
@@ -274,7 +274,6 @@ void QTabContent::constructListViewDOSHeader()
 
 		memberOffset += dosHeaderMembers[i].size;
 	}
-	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 
@@ -311,7 +310,6 @@ void QTabContent::constructListViewNTHeaders()
 
 		memberOffset += ntHeadersMembers[i].size;
 	}
-	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewFileHeader()
@@ -347,7 +345,6 @@ void QTabContent::constructListViewFileHeader()
 
 		memberOffset += fileHeaderMembers[i].size;
 	}
-	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewOptionalHeader()
@@ -383,7 +380,6 @@ void QTabContent::constructListViewOptionalHeader()
 
 		memberOffset += optionalHeader32Members[i].size;
 	}
-	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewDataDirectories()
@@ -421,7 +417,6 @@ void QTabContent::constructListViewDataDirectories()
 
 		memberOffset += dataDirectoriesMembers[i].size;
 	}
-	listView->verticalHeader()->hide(); // Hide first Column which is not used
 }
 
 void QTabContent::constructListViewSectionHeader()
@@ -448,7 +443,6 @@ void QTabContent::constructListViewSectionHeader()
 		listView->setItem(i, 8, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].NumberOfLinenumbers, 2 * sizeof(peHeaders->sectionHeaders[i].NumberOfLinenumbers), 16, QChar('0')).toUpper()));
 		listView->setItem(i, 9, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].Characteristics, 2 * sizeof(peHeaders->sectionHeaders[i].Characteristics), 16, QChar('0')).toUpper()));
 	}
-	listView->verticalHeader()->hide();
 }
 
 void QTabContent::constructListViewExportDirectory()
