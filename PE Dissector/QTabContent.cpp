@@ -10,10 +10,8 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 
 	hexView = new QHexView(this);
 	hexView->setReadOnly(true);
-	hexDocument = QHexDocument::fromFile<QMemoryBuffer>(this->fileName, hexView);
-	hexView->setDocument(hexDocument);
-	hexMetadata = hexDocument->metadata();
-	hexMetadata->clear();
+	hexView->setDocument(QHexDocument::fromFile<QMemoryBuffer>(this->fileName, hexView));
+	hexView->document()->metadata()->clear();
 
 	hBoxLayout = new QHBoxLayout();
 	hBoxLayout->addWidget(listView);
@@ -205,18 +203,23 @@ void QTabContent::constructListView(int treeItemType)
 		break;
 
 	case TREE_ITEM_TYPE_EXPORT_DIRECTORY:
+		constructListViewExportDirectory();
 		break;
 
 	case TREE_ITEM_TYPE_IMPORT_DIRECTORY:
+		constructListViewImportDirectory();
 		break;
 
 	case TREE_ITEM_TYPE_RESOURCE_DIRECTORY:
+		constructListViewResourceDirectory();
 		break;
 
 	case TREE_ITEM_TYPE_DEBUG_DIRECTORY:
+		constructListViewDebugDirectory();
 		break;
 
 	case TREE_ITEM_TYPE_TLS_DIRECTORY:
+		constructListViewTLSDirectory();
 		break;
 
 	default:
@@ -354,7 +357,7 @@ void QTabContent::constructListViewOptionalHeader()
 
 	listView->setRowCount(0);
 	int memberOffset = 0;
-	int fileOffset = peHeaders->dosHeader.e_lfanew + sizeof(peHeaders->dosHeader.e_lfanew) + sizeof(peHeaders->ntHeaders.FileHeader);
+	int fileOffset = peHeaders->dosHeader.e_lfanew + sizeof(peHeaders->ntHeaders.Signature) + sizeof(peHeaders->ntHeaders.FileHeader);
 
 	// SHOULD CHECKS IF WE HAVE A 64 BITS PE.
 	for (int i = 0; optionalHeader32Members[i].size; i++)
@@ -390,7 +393,7 @@ void QTabContent::constructListViewDataDirectories()
 
 	listView->setRowCount(0);
 	int memberOffset = 0;
-	int fileOffset = peHeaders->dosHeader.e_lfanew + sizeof(peHeaders->dosHeader.e_lfanew) 
+	int fileOffset = peHeaders->dosHeader.e_lfanew + sizeof(peHeaders->ntHeaders.Signature) 
 		+ sizeof(peHeaders->ntHeaders.FileHeader) + sizeof(peHeaders->ntHeaders.OptionalHeader) 
 		- sizeof(peHeaders->ntHeaders.OptionalHeader.DataDirectory);
 
@@ -423,6 +426,29 @@ void QTabContent::constructListViewDataDirectories()
 
 void QTabContent::constructListViewSectionHeader()
 {
+	// This display of the section header is a copy from CCF Explorer but is subject to change to a more detailed view more like the other headers.
+	listView->setColumnCount(10);
+	listView->setHorizontalHeaderLabels(QStringList() << "Name" << "Virtual Size" << "Virtual Address" << "Raw Size" << "Raw Address"
+		<< "Reloc Address" << "Linenumbers" << "Relocations Number" << "Linenumbers Number" << "Characteristics");
+	listView->setRowCount(0);
+	int memberOffset = 0;
+	int fileOffset = peHeaders->dosHeader.e_lfanew + sizeof(peHeaders->ntHeaders);
+
+	for (int i = 0; i < peHeaders->ntHeaders.FileHeader.NumberOfSections; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(QByteArray((char*)peHeaders->sectionHeaders[i].Name, 8))));
+		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].Misc.VirtualSize, 2 * sizeof(peHeaders->sectionHeaders[i].Misc.VirtualSize), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].VirtualAddress, 2 * sizeof(peHeaders->sectionHeaders[i].VirtualAddress), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].SizeOfRawData, 2 * sizeof(peHeaders->sectionHeaders[i].SizeOfRawData), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].PointerToRawData, 2 * sizeof(peHeaders->sectionHeaders[i].PointerToRawData), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 5, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].PointerToRelocations, 2 * sizeof(peHeaders->sectionHeaders[i].PointerToRelocations), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 6, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].PointerToLinenumbers, 2 * sizeof(peHeaders->sectionHeaders[i].PointerToLinenumbers), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 7, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].NumberOfRelocations, 2 * sizeof(peHeaders->sectionHeaders[i].NumberOfRelocations), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 8, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].NumberOfLinenumbers, 2 * sizeof(peHeaders->sectionHeaders[i].NumberOfLinenumbers), 16, QChar('0')).toUpper()));
+		listView->setItem(i, 9, new QTableWidgetItem(QString("%1").arg(peHeaders->sectionHeaders[i].Characteristics, 2 * sizeof(peHeaders->sectionHeaders[i].Characteristics), 16, QChar('0')).toUpper()));
+	}
+	listView->verticalHeader()->hide();
 }
 
 void QTabContent::constructListViewExportDirectory()

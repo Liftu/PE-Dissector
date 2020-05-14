@@ -69,6 +69,4 @@ private:
 	QHBoxLayout* hBoxLayout;
 	QTableWidget* listView;
 	QHexView* hexView;
-	QHexDocument* hexDocument;
-	QHexMetadata* hexMetadata;
 };
