@@ -1,10 +1,9 @@
 #include "QTabContent.h"
 
-QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView)
+QTabContent::QTabContent(QString fileName, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView)
 {
-	this->fileName = filename;
+	this->fileName = fileName;
 	this->peHeaders = peHeaders;
-	constructTreeRootItem();
 
 	listView = new QTableWidget(0, 0, this);
 	listView->verticalHeader()->hide(); // Hide first Column which is not used
@@ -23,6 +22,8 @@ QTabContent::QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool display
 
 	listView->setHidden(!displayListView);
 	hexView->setHidden(!displayHexView);
+
+	constructTreeRootItem();
 }
 
 QTabContent::~QTabContent()
@@ -121,10 +122,15 @@ void QTabContent::constructTreeRootItem()
 	// Export Directory
 	if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress > 0)
 	{
-		QTreeWidgetItem* treeExportDirecotryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_EXPORT_DIRECTORY);// treeRootItem);
-		treeExportDirecotryItem->setText(0, "Export Directory");
-		treeExportDirecotryItem->setIcon(0, folderIcon);
-		treeRootItem->addChild(treeExportDirecotryItem);
+		QTreeWidgetItem* treeExportDirectoryItem = new QTreeWidgetItem(TREE_ITEM_TYPE_EXPORT_DIRECTORY);// treeRootItem);
+		treeExportDirectoryItem->setText(0, "Export Directory");
+		treeExportDirectoryItem->setIcon(0, folderIcon);
+		treeRootItem->addChild(treeExportDirectoryItem);
+
+		QTreeWidgetItem* treeExportedFunctionsItem = new QTreeWidgetItem(TREE_ITEM_TYPE_EXPORTED_FUNCTIONS);
+		treeExportedFunctionsItem->setText(0, "Exported Functions");
+		treeExportedFunctionsItem->setIcon(0, headerIcon);
+		treeExportDirectoryItem->addChild(treeExportedFunctionsItem);
 	}
 
 	// Import Directory
@@ -134,8 +140,33 @@ void QTabContent::constructTreeRootItem()
 		treeImportDirecotryItem->setText(0, "Import Directory");
 		treeImportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeImportDirecotryItem);
-		// Import Descriptors
-		// if ()
+		
+
+		//(peHeaders->importDescriptors[0].Name - peHeaders->sectionHeaders[sectionNumber].VirtualAddress
+		//	+ peHeader32.sectionHeaders[sectionNumber].PointerToRawData)
+		// Import Descriptors (DLLs)
+		WORD sectionNumber = getSectionOfRVA(peHeaders->importDescriptors[0].Name,
+			peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
+		if (sectionNumber != (WORD)-1)
+		{
+			if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size % 0x14 == 0)
+			{
+				QTreeWidgetItem* treeImportedDLLItem;
+				for (int i = 0; i < ((peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14) - 1); i++)
+				{
+					treeImportedDLLItem = new QTreeWidgetItem(TREE_ITEM_TYPE_IMPORTED_DLL + i);
+					// This is a temporary solution to get the name of the DLL.
+					treeImportedDLLItem->setText(0,
+						QString(hexView->document()->read((peHeaders->importDescriptors[i].Name 
+							- peHeaders->sectionHeaders[sectionNumber].VirtualAddress
+							+ peHeaders->sectionHeaders[sectionNumber].PointerToRawData
+						), MAX_PATH)));
+
+					treeImportedDLLItem->setIcon(0, dllFileIcon);
+					treeImportDirecotryItem->addChild(treeImportedDLLItem);
+				}
+			}
+		}
 	}
 
 	// Resource Directory
@@ -413,10 +444,10 @@ void QTabContent::constructListViewDataDirectories()
 		// if i is even, it means the item is RVA, so we try to display the sections
 		if (i % 2 == 0)
 		{
-			short sectionNumber = getSectionOfRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[i/2].VirtualAddress,
+			WORD sectionNumber = getSectionOfRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[i/2].VirtualAddress,
 				peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
 			// Checks if the RVA is indeed in a section.
-			if (sectionNumber >= 0)
+			if (sectionNumber != (WORD)-1)
 				listView->setItem(i, 4, new QTableWidgetItem(QString(QByteArray((char*)peHeaders->sectionHeaders[sectionNumber].Name, 8))));
 		}
 

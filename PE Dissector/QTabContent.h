@@ -28,7 +28,7 @@ class QTabContent : public QWidget
 	Q_OBJECT
 
 public:
-	QTabContent(QString filename, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
+	QTabContent(QString fileName, PPE_HEADERS32 peHeaders, bool displayListView, bool displayHexView);
 	~QTabContent();
 	PPE_HEADERS32 getPEHeaders();
 	QTreeWidgetItem* getTreeRootItem();
@@ -45,10 +45,15 @@ public:
 		TREE_ITEM_TYPE_DATA_DIRECTORIES,
 		TREE_ITEM_TYPE_SECTION_HEADER,
 		TREE_ITEM_TYPE_EXPORT_DIRECTORY,
+		TREE_ITEM_TYPE_EXPORTED_FUNCTIONS,
 		TREE_ITEM_TYPE_IMPORT_DIRECTORY,
 		TREE_ITEM_TYPE_RESOURCE_DIRECTORY,
 		TREE_ITEM_TYPE_DEBUG_DIRECTORY,
 		TREE_ITEM_TYPE_TLS_DIRECTORY,
+
+		// End of the enum because we don't know how many DLLs 
+		// are imported and we add 1 for each imported DLL
+		TREE_ITEM_TYPE_IMPORTED_DLL = QTreeWidgetItem::UserType + 100,
 	};
 
 public slots:
