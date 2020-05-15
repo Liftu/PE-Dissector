@@ -170,7 +170,7 @@ const headerMember dataDirectoriesMembers[] = {
 
 // SECTION HEADER
 const headerMember sectionHeaderMembers[] = {
-	headerMember{"BYTE[8]", sizeof(BYTE[IMAGE_SIZEOF_SHORT_NAME]), "Name"},
+	headerMember{"BYTE[8]", sizeof(BYTE[8]), "Name"},
 	headerMember{"DWORD", sizeof(DWORD), "VirtualSize"},
 	headerMember{"DWORD", sizeof(DWORD), "VirtualAddress"},
 	headerMember{"DWORD", sizeof(DWORD), "SizeOfRawData"},
@@ -179,6 +179,67 @@ const headerMember sectionHeaderMembers[] = {
 	headerMember{"DWORD", sizeof(DWORD), "PointerToLinenumbers"},
 	headerMember{"WORD", sizeof(WORD), "NumberOfRelocations"},
 	headerMember{"WORD", sizeof(WORD), "NumberOfLinenumbers"},
+	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
+	headerMember{"", 0, ""},
+};
+
+// EXPORT DIRECTORY
+const headerMember exportDirectoryMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
+	headerMember{"DWORD", sizeof(DWORD), "TimeDateStamp"},
+	headerMember{"WORD", sizeof(WORD), "MajorVersion"},
+	headerMember{"WORD", sizeof(WORD), "MinorVersion"},
+	headerMember{"DWORD", sizeof(DWORD), "Name"},
+	headerMember{"DWORD", sizeof(DWORD), "Base"},
+	headerMember{"DWORD", sizeof(DWORD), "NumberOfFunctions"},
+	headerMember{"DWORD", sizeof(DWORD), "NumberOfNames"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfFunctions"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfNames"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfNameOrdinals"},
+	headerMember{"", 0, ""},
+};
+
+// IMPORT DESCRIPTORS
+const headerMember importDescriptorMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "OriginalFirstThunk"},	// INT
+	headerMember{"DWORD", sizeof(DWORD), "TimeDateStamp"},
+	headerMember{"DWORD", sizeof(DWORD), "ForwarderChain"},
+	headerMember{"DWORD", sizeof(DWORD), "Name"},
+	headerMember{"DWORD", sizeof(DWORD), "FirstThunk"},			// IAT
+	headerMember{"", 0, ""},
+};
+
+// RESOURCE DIRECTORY
+const headerMember resourceDirectoryMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
+	headerMember{"DWORD", sizeof(DWORD), "TimeDateStamp"},
+	headerMember{"WORD", sizeof(WORD), "MajorVersion"},
+	headerMember{"WORD", sizeof(WORD), "MinorVersion"},
+	headerMember{"WORD", sizeof(WORD), "NumberOfNamedEntries"},
+	headerMember{"WORD", sizeof(WORD), "NumberOfIdEntries"},
+	headerMember{"", 0, ""},
+};
+
+// DEBUG DIRECTORY
+const headerMember debugDirectoryMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
+	headerMember{"DWORD", sizeof(DWORD), "TimeDateStamp"},
+	headerMember{"WORD", sizeof(WORD), "MajorVersion"},
+	headerMember{"WORD", sizeof(WORD), "MinorVersion"},
+	headerMember{"DWORD", sizeof(DWORD), "Type"},
+	headerMember{"DWORD", sizeof(DWORD), "SizeOfData"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfRawData"},
+	headerMember{"DWORD", sizeof(DWORD), "PointerToRawData"},
+	headerMember{"", 0, ""},
+};
+
+// TLS DIRECTORY
+const headerMember tlsDirectoryMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "StartAddressOfRawData"},
+	headerMember{"DWORD", sizeof(DWORD), "EndAddressOfRawData"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfIndex"},
+	headerMember{"DWORD", sizeof(DWORD), "AddressOfCallBacks"},
+	headerMember{"DWORD", sizeof(DWORD), "SizeOfZeroFill"},
 	headerMember{"DWORD", sizeof(DWORD), "Characteristics"},
 	headerMember{"", 0, ""},
 };
