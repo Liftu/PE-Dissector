@@ -58,7 +58,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 	// EXPORT DIRECTORY
 	WORD sectionNumber;
 	// Check if there is an export directory and gets the index of the section it is in.
-	if ((sectionNumber = getSectionOfRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress,
+	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
@@ -72,7 +72,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 	// IMPORT DIRECTORY
 	// Check if there is an import directory and gets the index of the section it is in.
-	if ((sectionNumber = getSectionOfRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress,
+	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		peHeaders32->importDescriptors = malloc(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size);
@@ -87,7 +87,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 	// RESSOURCE DIRECTORY
 	// Check if there is an export directory and gets the index of the section it is in.
-	if ((sectionNumber = getSectionOfRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress,
+	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
@@ -101,7 +101,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 	// DEBUG DIRECTORY
 	// Check if there is an export directory and gets the index of the section it is in.
-	if ((sectionNumber = getSectionOfRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress,
+	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
@@ -115,7 +115,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 	// TLS DIRECTORY // Gonna assume it works because I can't find a PE sample with TLS directory in it...
 	// Check if there is an export directory and gets the index of the section it is in.
-	if ((sectionNumber = getSectionOfRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress,
+	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
@@ -132,7 +132,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 	return TRUE;
 }
 
-WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders)
+WORD getSectionFromRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders)
 {
 	WORD section = -1;
 	for (int i = 0; i < numberOfSections; i++)
@@ -144,4 +144,15 @@ WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sec
 		}
 	}
 	return section;
+}
+
+QWORD getFileOffsetFromRVA(QWORD RVA, PPE_HEADERS32 peHearders32)
+{
+	QWORD fileOffset = -1;
+	WORD sectionNumber = getSectionFromRVA(RVA, peHearders32->ntHeaders.FileHeader.NumberOfSections, peHearders32->sectionHeaders);
+	if (sectionNumber != (WORD)-1)
+	{
+		fileOffset = RVA - peHearders32->sectionHeaders[sectionNumber].VirtualAddress + peHearders32->sectionHeaders[sectionNumber].PointerToRawData;
+	}
+	return fileOffset;
 }

@@ -141,27 +141,21 @@ void QTabContent::constructTreeRootItem()
 		treeImportDirecotryItem->setIcon(0, folderIcon);
 		treeRootItem->addChild(treeImportDirecotryItem);
 		
-
-		//(peHeaders->importDescriptors[0].Name - peHeaders->sectionHeaders[sectionNumber].VirtualAddress
-		//	+ peHeader32.sectionHeaders[sectionNumber].PointerToRawData)
 		// Import Descriptors (DLLs)
-		WORD sectionNumber = getSectionOfRVA(peHeaders->importDescriptors[0].Name,
-			peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
-		if (sectionNumber != (WORD)-1)
+		//WORD sectionNumber = getSectionFromRVA(peHeaders->importDescriptors[0].Name,
+		//	peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
+		//if (sectionNumber != (WORD)-1)
+		if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size % 0x14 == 0)
 		{
-			if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size % 0x14 == 0)
+			QTreeWidgetItem* treeImportedDLLItem;
+			for (int i = 0; i < ((peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14) - 1); i++)
 			{
-				QTreeWidgetItem* treeImportedDLLItem;
-				for (int i = 0; i < ((peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14) - 1); i++)
+				QWORD fileOffsetOfName = getFileOffsetFromRVA(peHeaders->importDescriptors[i].Name, peHeaders);
+				if (fileOffsetOfName != (QWORD)-1)
 				{
 					treeImportedDLLItem = new QTreeWidgetItem(TREE_ITEM_TYPE_IMPORTED_DLL + i);
 					// This is a temporary solution to get the name of the DLL.
-					treeImportedDLLItem->setText(0,
-						QString(hexView->document()->read((peHeaders->importDescriptors[i].Name 
-							- peHeaders->sectionHeaders[sectionNumber].VirtualAddress
-							+ peHeaders->sectionHeaders[sectionNumber].PointerToRawData
-						), MAX_PATH)));
-
+					treeImportedDLLItem->setText(0, QString(hexView->document()->read(fileOffsetOfName, MAX_PATH)));
 					treeImportedDLLItem->setIcon(0, dllFileIcon);
 					treeImportDirecotryItem->addChild(treeImportedDLLItem);
 				}
@@ -444,7 +438,7 @@ void QTabContent::constructListViewDataDirectories()
 		// if i is even, it means the item is RVA, so we try to display the sections
 		if (i % 2 == 0)
 		{
-			WORD sectionNumber = getSectionOfRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[i/2].VirtualAddress,
+			WORD sectionNumber = getSectionFromRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[i/2].VirtualAddress,
 				peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
 			// Checks if the RVA is indeed in a section.
 			if (sectionNumber != (WORD)-1)
