@@ -62,6 +62,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
 		numberOfBytesRead = 0;
+		// I should use the new getFileOffsetFromRVA function for these.
 		SetFilePointer(hFile, (peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress
 			- peHeaders32->sectionHeaders[sectionNumber].VirtualAddress + peHeaders32->sectionHeaders[sectionNumber].PointerToRawData),
 			NULL, FILE_BEGIN);

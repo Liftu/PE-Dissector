@@ -142,9 +142,6 @@ void QTabContent::constructTreeRootItem()
 		treeRootItem->addChild(treeImportDirecotryItem);
 		
 		// Import Descriptors (DLLs)
-		//WORD sectionNumber = getSectionFromRVA(peHeaders->importDescriptors[0].Name,
-		//	peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
-		//if (sectionNumber != (WORD)-1)
 		if (peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size % 0x14 == 0)
 		{
 			QTreeWidgetItem* treeImportedDLLItem;
@@ -282,7 +279,7 @@ void QTabContent::constructListViewDOSHeader()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(dosHeaderMembers[i].name)));						// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(dosHeaderMembers[i].sizeTitle)));					// Size
-		// This mess allow me to access the header struct as an array or a memory buffer.
+		// This mess allows me to access the header struct as an array or a memory buffer.
 		switch (dosHeaderMembers[i].size)																		// Value
 		{
 		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)&(peHeaders->dosHeader) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
@@ -318,7 +315,7 @@ void QTabContent::constructListViewNTHeaders()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(ntHeadersMembers[i].name)));						// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(ntHeadersMembers[i].sizeTitle)));					// Size
-		// This mess allow me to access the header struct as an array or a memory buffer.
+		// This mess allows me to access the header struct as an array or a memory buffer.
 		switch (ntHeadersMembers[i].size)																		// Value
 		{
 		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)&(peHeaders->ntHeaders) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
@@ -353,7 +350,7 @@ void QTabContent::constructListViewFileHeader()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(fileHeaderMembers[i].name)));						// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(fileHeaderMembers[i].sizeTitle)));					// Size
-		// This mess allow me to access the header struct as an array or a memory buffer.
+		// This mess allows me to access the header struct as an array or a memory buffer.
 		switch (fileHeaderMembers[i].size)																		// Value
 		{
 		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)&(peHeaders->ntHeaders.FileHeader) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
@@ -388,7 +385,7 @@ void QTabContent::constructListViewOptionalHeader()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(optionalHeader32Members[i].name)));				// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(optionalHeader32Members[i].sizeTitle)));			// Size
-		// This mess allow me to access the header struct as an array or a memory buffer.
+		// This mess allows me to access the header struct as an array or a memory buffer.
 		switch (optionalHeader32Members[i].size)																// Value
 		{
 			case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)&(peHeaders->ntHeaders.OptionalHeader) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
@@ -426,7 +423,7 @@ void QTabContent::constructListViewDataDirectories()
 		listView->setItem(i, 0, new QTableWidgetItem(QString(dataDirectoriesMembers[i].name)));					// Member
 		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
 		listView->setItem(i, 2, new QTableWidgetItem(QString(dataDirectoriesMembers[i].sizeTitle)));			// Size
-		// This mess allow me to access the header struct as an array or a memory buffer.
+		// This mess allows me to access the header struct as an array or a memory buffer.
 		switch (dataDirectoriesMembers[i].size)																	// Value
 		{
 		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)(peHeaders->ntHeaders.OptionalHeader.DataDirectory) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
@@ -477,6 +474,37 @@ void QTabContent::constructListViewSectionHeader()
 
 void QTabContent::constructListViewExportDirectory()
 {
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+
+	listView->setRowCount(0);
+	int memberOffset = 0;
+	int fileOffset = getFileOffsetFromRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress, peHeaders);
+
+	// SHOULD CHECKS IF WE HAVE A 64 BITS PE.
+	for (int i = 0; exportDirectoryMembers[i].size; i++)
+	{
+		listView->insertRow(i);
+		listView->setItem(i, 0, new QTableWidgetItem(QString(exportDirectoryMembers[i].name)));						// Member
+		listView->setItem(i, 1, new QTableWidgetItem(QString("%1").arg(fileOffset + memberOffset, 8, 16, QChar('0')).toUpper()));	// Offset
+		listView->setItem(i, 2, new QTableWidgetItem(QString(exportDirectoryMembers[i].sizeTitle)));					// Size
+		// This mess allows me to access the header struct as an array or a memory buffer.
+		switch (exportDirectoryMembers[i].size)																		// Value
+		{
+		case 1: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(BYTE*)((BYTE*)&(peHeaders->exportDirectory) + memberOffset), 2 * sizeof(BYTE), 16, QChar('0')).toUpper())); break;
+		case 2: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(WORD*)((BYTE*)&(peHeaders->exportDirectory) + memberOffset), 2 * sizeof(WORD), 16, QChar('0')).toUpper())); break;
+		case 4: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(DWORD*)((BYTE*)&(peHeaders->exportDirectory) + memberOffset), 2 * sizeof(DWORD), 16, QChar('0')).toUpper())); break;
+		case 8: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(QWORD*)((BYTE*)&(peHeaders->exportDirectory) + memberOffset), 2 * sizeof(QWORD), 16, QChar('0')).toUpper())); break;
+		}
+
+		// WILL ADD MEANING COLUNM CONTENT BELOW
+		//if (QString::compare(dosHeaderMembers[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
+		//else if (QString::compare(dosHeaderMembers[i].name, "", Qt::CaseInsensitive))
+		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
+
+		memberOffset += exportDirectoryMembers[i].size;
+	}
 }
 
 void QTabContent::constructListViewImportDirectory()
