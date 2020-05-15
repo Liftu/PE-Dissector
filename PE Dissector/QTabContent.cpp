@@ -385,7 +385,7 @@ void QTabContent::constructListViewOptionalHeader()
 void QTabContent::constructListViewDataDirectories()
 {
 	listView->setColumnCount(5);
-	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Meaning");
+	listView->setHorizontalHeaderLabels(QStringList() << "Member" << "Offset" << "Size" << "Value" << "Section");
 
 	listView->setRowCount(0);
 	int memberOffset = 0;
@@ -394,6 +394,7 @@ void QTabContent::constructListViewDataDirectories()
 		- sizeof(peHeaders->ntHeaders.OptionalHeader.DataDirectory);
 
 	// SHOULD CHECKS IF WE HAVE A 64 BITS PE.
+	// We could check i < 32 but we do as for the other sections
 	for (int i = 0; dataDirectoriesMembers[i].size; i++)
 	{
 		listView->insertRow(i);
@@ -409,11 +410,15 @@ void QTabContent::constructListViewDataDirectories()
 		case 8: listView->setItem(i, 3, new QTableWidgetItem(QString("%1").arg(*(QWORD*)((BYTE*)(peHeaders->ntHeaders.OptionalHeader.DataDirectory) + memberOffset), 2 * sizeof(QWORD), 16, QChar('0')).toUpper())); break;
 		}
 
-		// WILL ADD MEANING COLUNM CONTENT BELOW
-		//if (QString::compare(dataDirectoriesMembers[i].name, "", Qt::CaseInsensitive))
-		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
-		//else if (QString::compare(dataDirectoriesMembers[i].name, "", Qt::CaseInsensitive))
-		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
+		// if i is even, it means the item is RVA, so we try to display the sections
+		if (i % 2 == 0)
+		{
+			short sectionNumber = getSectionOfRVA(peHeaders->ntHeaders.OptionalHeader.DataDirectory[i/2].VirtualAddress,
+				peHeaders->ntHeaders.FileHeader.NumberOfSections, peHeaders->sectionHeaders);
+			// Checks if the RVA is indeed in a section.
+			if (sectionNumber >= 0)
+				listView->setItem(i, 4, new QTableWidgetItem(QString(QByteArray((char*)peHeaders->sectionHeaders[sectionNumber].Name, 8))));
+		}
 
 		memberOffset += dataDirectoriesMembers[i].size;
 	}

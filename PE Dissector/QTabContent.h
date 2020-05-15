@@ -9,7 +9,15 @@
 #include <QtWidgets/qlabel.h>
 #include <QtCore/qdebug.h>
 
-extern "C" typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
+#include <Windows.h>
+extern "C" {
+	typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
+	typedef unsigned __int64 QWORD;
+	BOOL isFileExecutable(HANDLE hFile);
+	WORD getArchitecture(HANDLE hFile);
+	BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32);
+	WORD getSectionOfRVA(QWORD RVA, WORD numberOfSections, PIMAGE_SECTION_HEADER sectionHeaders);
+};
 #include "PE Dissector.h"
 #include "HeaderMembers.h"
 #include "QHexView/qhexview.h"
