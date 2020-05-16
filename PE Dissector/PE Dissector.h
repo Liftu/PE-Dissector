@@ -12,6 +12,9 @@ typedef struct _PE_HEADERS32
 	IMAGE_NT_HEADERS32 ntHeaders;
 	IMAGE_SECTION_HEADER* sectionHeaders;
 	IMAGE_EXPORT_DIRECTORY exportDirectory;
+	DWORD* addressOfExportedFunctions;
+	WORD*  addressOfExportedNameOrdinals;
+	DWORD* addressOfExportedNames;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
 	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;
@@ -25,6 +28,9 @@ typedef struct _PE_HEADERS64
 	IMAGE_NT_HEADERS64 ntHeaders;
 	IMAGE_SECTION_HEADER* sectionHeaders;
 	IMAGE_EXPORT_DIRECTORY exportDirectory;
+	DWORD* addressOfExportedFunctions;
+	WORD*  addressOfExportedNameOrdinals;
+	DWORD* addressOfExportedNames;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
 	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;

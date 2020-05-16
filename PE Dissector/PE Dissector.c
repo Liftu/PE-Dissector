@@ -69,6 +69,27 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 		if (!ReadFile(hFile, &peHeaders32->exportDirectory, sizeof(IMAGE_EXPORT_DIRECTORY), &numberOfBytesRead, NULL))
 			return FALSE;
+
+		// Address of exported functions
+		numberOfBytesRead = 0;
+		peHeaders32->addressOfExportedFunctions = malloc(peHeaders32->exportDirectory.NumberOfFunctions * sizeof(DWORD));
+		SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->exportDirectory.AddressOfFunctions, peHeaders32), NULL, FILE_BEGIN);
+		if (!ReadFile(hFile, peHeaders32->addressOfExportedFunctions, (peHeaders32->exportDirectory.NumberOfFunctions * sizeof(DWORD)), &numberOfBytesRead, NULL))
+			return FALSE;
+
+		// Address of exported name ordinals
+		numberOfBytesRead = 0;
+		peHeaders32->addressOfExportedNameOrdinals = malloc(peHeaders32->exportDirectory.NumberOfFunctions * sizeof(WORD));
+		SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->exportDirectory.AddressOfNameOrdinals, peHeaders32), NULL, FILE_BEGIN);
+		if (!ReadFile(hFile, peHeaders32->addressOfExportedNameOrdinals, (peHeaders32->exportDirectory.NumberOfFunctions * sizeof(WORD)), &numberOfBytesRead, NULL))
+			return FALSE;
+
+		// Address of exported names
+		numberOfBytesRead = 0;
+		peHeaders32->addressOfExportedNames = malloc(peHeaders32->exportDirectory.NumberOfFunctions * sizeof(DWORD));
+		SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->exportDirectory.AddressOfNames, peHeaders32), NULL, FILE_BEGIN);
+		if (!ReadFile(hFile, peHeaders32->addressOfExportedNames, (peHeaders32->exportDirectory.NumberOfFunctions * sizeof(DWORD)), &numberOfBytesRead, NULL))
+			return FALSE;
 	}
 
 	// IMPORT DIRECTORY
