@@ -229,6 +229,10 @@ void QTabContent::constructListView(int treeItemType)
 		constructListViewExportDirectory();
 		break;
 
+	case TREE_ITEM_TYPE_EXPORTED_FUNCTIONS:
+		constructListViewExportedFunctions();
+		break;
+
 	case TREE_ITEM_TYPE_IMPORT_DIRECTORY:
 		constructListViewImportDirectory();
 		break;
@@ -504,6 +508,30 @@ void QTabContent::constructListViewExportDirectory()
 		//	listView->setItem(i, 4, new QTableWidgetItem(QString("")));
 
 		memberOffset += exportDirectoryMembers[i].size;
+	}
+}
+
+void QTabContent::constructListViewExportedFunctions()
+{
+	listView->setColumnCount(5);
+	listView->setHorizontalHeaderLabels(QStringList() << "Ordinal" << "Function RVA" << "Name Ordinal" << "Name RVA" << "Name");
+
+	listView->setRowCount(0);
+	listView->insertRow(0);
+	listView->setItem(0, 0, new QTableWidgetItem(QString("(nFunctions)")));
+	listView->setItem(0, 1, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(0, 2, new QTableWidgetItem(QString("WORD")));
+	listView->setItem(0, 3, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(0, 4, new QTableWidgetItem(QString("STRING")));
+
+	for (int i = 0; i < peHeaders->exportDirectory.NumberOfFunctions; i++)
+	{
+		listView->insertRow(i + 1);
+		listView->setItem(i + 1, 0, new QTableWidgetItem(QString("%1").arg(i, 8, 10, QChar('0'))));
+		listView->setItem(i + 1, 1, new QTableWidgetItem(QString("%1").arg(1, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 1, 2, new QTableWidgetItem(QString("%1").arg(22, 2 * sizeof(WORD), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 1, 3, new QTableWidgetItem(QString("%1").arg(333, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 1, 4, new QTableWidgetItem(QString("Name")));
 	}
 }
 

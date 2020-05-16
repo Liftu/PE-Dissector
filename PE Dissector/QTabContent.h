@@ -72,6 +72,7 @@ private:
 	void constructListViewDataDirectories();
 	void constructListViewSectionHeader();
 	void constructListViewExportDirectory();
+	void constructListViewExportedFunctions();
 	void constructListViewImportDirectory();
 	void constructListViewResourceDirectory();
 	void constructListViewDebugDirectory();
