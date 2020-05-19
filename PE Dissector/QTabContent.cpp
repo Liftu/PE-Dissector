@@ -514,7 +514,7 @@ void QTabContent::constructListViewExportDirectory()
 void QTabContent::constructListViewExportedFunctions()
 {
 	listView->setColumnCount(5);
-	listView->setHorizontalHeaderLabels(QStringList() << "Ordinal" << "Function RVA" << "Name Ordinal" << "Name RVA" << "Name");
+	listView->setHorizontalHeaderLabels(QStringList() << "Name" << "Ordinal" << "Function RVA" << "Name RVA" << "Name Ordinal");
 
 	listView->setRowCount(0);
 	// Offsets (to be implemented)
@@ -526,25 +526,64 @@ void QTabContent::constructListViewExportedFunctions()
 	listView->setItem(0, 4, new QTableWidgetItem(QString("")));
 	// Types
 	listView->insertRow(1);
-	listView->setItem(1, 0, new QTableWidgetItem(QString("(index)")));
-	listView->setItem(1, 1, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 2, new QTableWidgetItem(QString("WORD")));
+	listView->setItem(1, 0, new QTableWidgetItem(QString("STRING")));
+	listView->setItem(1, 1, new QTableWidgetItem(QString("(index)")));
+	listView->setItem(1, 2, new QTableWidgetItem(QString("DWORD")));
 	listView->setItem(1, 3, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 4, new QTableWidgetItem(QString("STRING")));
+	listView->setItem(1, 4, new QTableWidgetItem(QString("WORD")));
 
 	for (int i = 0; i < peHeaders->exportDirectory.NumberOfFunctions; i++)
 	{
-		listView->insertRow(i + 2);
-		listView->setItem(i + 2, 0, new QTableWidgetItem(QString("%1").arg(i, 8, 10, QChar('0'))));
-		listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(peHeaders->addressOfExportedFunctions[i], 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-		listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->addressOfExportedNameOrdinals[i], 2 * sizeof(WORD), 16, QChar('0')).toUpper()));
+		listView->insertRow(i + 2); // +2 Because we have offsets and types above.
+		listView->setItem(i + 2, 0, new QTableWidgetItem(QString(hexView->document()->read(getFileOffsetFromRVA(peHeaders->addressOfExportedNames[i], peHeaders), MAX_PATH))));
+		listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(i, 8, 10, QChar('0'))));
+		listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->addressOfExportedFunctions[i], 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
 		listView->setItem(i + 2, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->addressOfExportedNames[i], 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-		listView->setItem(i + 2, 4, new QTableWidgetItem(QString(hexView->document()->read(getFileOffsetFromRVA(peHeaders->addressOfExportedNames[i], peHeaders), MAX_PATH))));
+		listView->setItem(i + 2, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->addressOfExportedNameOrdinals[i], 2 * sizeof(WORD), 16, QChar('0')).toUpper()));
 	}
 }
 
 void QTabContent::constructListViewImportDirectory()
 {
+	listView->setColumnCount(7);
+	listView->setHorizontalHeaderLabels(QStringList() << "Module Name" << "Imports" << "INT (OFT)" << "TimeDateStamp" << "ForwarderChain" << "Name RVA" << "IAT (FT)");
+
+	listView->setRowCount(0);
+	// Offsets (to be implemented)
+	listView->insertRow(0);
+	listView->setItem(0, 0, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 1, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 2, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 3, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 4, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 5, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 6, new QTableWidgetItem(QString("")));
+	// Types
+	listView->insertRow(1);
+	listView->setItem(1, 0, new QTableWidgetItem(QString("STRING")));
+	listView->setItem(1, 1, new QTableWidgetItem(QString("(nFunctions)")));
+	listView->setItem(1, 2, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 3, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 4, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 5, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 6, new QTableWidgetItem(QString("DWORD")));
+
+	for (int i = 0; i < ((peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14) - 1); i++)
+	{
+		QWORD fileOffsetOfName = getFileOffsetFromRVA(peHeaders->importDescriptors[i].Name, peHeaders);
+		if (fileOffsetOfName != (QWORD)-1)
+		{
+			listView->insertRow(i + 2); // +2 Because we have offsets and types above.
+			// This is a temporary solution to get the name of the DLL.
+			listView->setItem(i + 2, 0, new QTableWidgetItem(QString(hexView->document()->read(fileOffsetOfName, MAX_PATH))));
+			listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(142, 3, 10, QChar('0'))));
+			listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].OriginalFirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].TimeDateStamp, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].ForwarderChain, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 5, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].Name, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 6, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].FirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+		}
+	}
 }
 
 void QTabContent::constructListViewResourceDirectory()
