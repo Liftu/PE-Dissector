@@ -565,11 +565,8 @@ void QTabContent::constructListViewImportDirectory()
 	listView->insertRow(1);
 	listView->setItem(1, 0, new QTableWidgetItem(QString("STRING")));
 	listView->setItem(1, 1, new QTableWidgetItem(QString("(nFunctions)")));
-	listView->setItem(1, 2, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 3, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 4, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 5, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 6, new QTableWidgetItem(QString("DWORD")));
+	for (int i = 0; importDescriptorMembers[i].size; i++)
+		listView->setItem(1, i + 2, new QTableWidgetItem(QString(importDescriptorMembers[i].sizeTitle)));
 
 	for (int i = 0; i < ((peHeaders->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14) - 1); i++)
 	{
@@ -584,11 +581,11 @@ void QTabContent::constructListViewImportDirectory()
 			for (numberOfImports = 0; peHeaders->importDescriptorsEntries[i][numberOfImports].importNameTable; numberOfImports++);
 
 			listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(numberOfImports, 3, 10, QChar('0'))));
-			listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].OriginalFirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-			listView->setItem(i + 2, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].TimeDateStamp, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-			listView->setItem(i + 2, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].ForwarderChain, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-			listView->setItem(i + 2, 5, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].Name, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
-			listView->setItem(i + 2, 6, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].FirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].OriginalFirstThunk, 2 * importDescriptorMembers[0].size, 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].TimeDateStamp, 2 * importDescriptorMembers[1].size, 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].ForwarderChain, 2 * importDescriptorMembers[2].size, 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 5, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].Name, 2 * importDescriptorMembers[3].size, 16, QChar('0')).toUpper()));
+			listView->setItem(i + 2, 6, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].FirstThunk, 2 * importDescriptorMembers[4].size, 16, QChar('0')).toUpper()));
 		}
 	}
 }
@@ -597,6 +594,8 @@ void QTabContent::constructListViewImportedModule(int moduleIndex)
 {
 	listView->setColumnCount(4);
 	listView->setHorizontalHeaderLabels(QStringList() << "INT (OFT)" << "IAT (FT)" << "Hint" << "Name");
+	//listView->setHorizontalHeaderLabels(QStringList() << importDescriptorEntryMembers[0].name << importDescriptorEntryMembers[1].name
+	//	<< importDescriptorEntryMembers[2].name << importDescriptorEntryMembers[3].name);
 
 	listView->setRowCount(0);
 	// Offsets (to be implemented)
@@ -607,17 +606,15 @@ void QTabContent::constructListViewImportedModule(int moduleIndex)
 	listView->setItem(0, 3, new QTableWidgetItem(QString("")));
 	// Types
 	listView->insertRow(1);
-	listView->setItem(1, 0, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 1, new QTableWidgetItem(QString("DWORD")));
-	listView->setItem(1, 2, new QTableWidgetItem(QString("WORD")));
-	listView->setItem(1, 3, new QTableWidgetItem(QString("STRING")));
+	for (int i = 0; importDescriptorEntryMembers[i].size; i++)
+		listView->setItem(1, i, new QTableWidgetItem(QString(importDescriptorEntryMembers[i].sizeTitle)));
 
 	for (int i = 0; peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable; i++)
 	{
 		listView->insertRow(i + 2);
-		listView->setItem(i + 2, 0, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable), 16, QChar('0')).toUpper()));
-		listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importAddressTable, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].importAddressTable), 16, QChar('0')).toUpper()));
-		listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].hint, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].hint), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 0, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable, 2 * importDescriptorEntryMembers[0].size, 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importAddressTable, 2 * importDescriptorEntryMembers[1].size, 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].hint, 2 * importDescriptorEntryMembers[2].size, 16, QChar('0')).toUpper()));
 		listView->setItem(i + 2, 3, new QTableWidgetItem(QString(peHeaders->importDescriptorsEntries[moduleIndex][i].name)));
 	}
 }

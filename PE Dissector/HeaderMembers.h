@@ -199,13 +199,22 @@ const headerMember exportDirectoryMembers[] = {
 	headerMember{"", 0, ""},
 };
 
-// IMPORT DESCRIPTORS
+// IMPORT DESCRIPTOR
 const headerMember importDescriptorMembers[] = {
 	headerMember{"DWORD", sizeof(DWORD), "OriginalFirstThunk"},	// INT
 	headerMember{"DWORD", sizeof(DWORD), "TimeDateStamp"},
 	headerMember{"DWORD", sizeof(DWORD), "ForwarderChain"},
 	headerMember{"DWORD", sizeof(DWORD), "Name"},
 	headerMember{"DWORD", sizeof(DWORD), "FirstThunk"},			// IAT
+	headerMember{"", 0, ""},
+};
+
+// IMPORT DESCRIPTOR ENTRY
+const headerMember importDescriptorEntryMembers[] = {
+	headerMember{"DWORD", sizeof(DWORD), "INT (OFT)"},	// INT
+	headerMember{"DWORD", sizeof(DWORD), "IAT (FT)"},	// IAT
+	headerMember{"WORD", sizeof(WORD), "Hint"},
+	headerMember{"STRING", sizeof(CHAR), "Name"},
 	headerMember{"", 0, ""},
 };
 
