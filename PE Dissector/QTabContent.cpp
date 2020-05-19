@@ -576,7 +576,19 @@ void QTabContent::constructListViewImportDirectory()
 			listView->insertRow(i + 2); // +2 Because we have offsets and types above.
 			// This is a temporary solution to get the name of the DLL.
 			listView->setItem(i + 2, 0, new QTableWidgetItem(QString(hexView->document()->read(fileOffsetOfName, MAX_PATH))));
-			listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(142, 3, 10, QChar('0'))));
+			// To get the number of imports
+			int thunkData;
+			int numberOfFunctions = 0;
+			do
+			{
+				// TODO : get this out of the loop
+				QDataStream data(hexView->document()->read(getFileOffsetFromRVA(peHeaders->importDescriptors[i].OriginalFirstThunk, peHeaders) + (numberOfFunctions * 4), sizeof(DWORD)));
+				data.setByteOrder(QDataStream::LittleEndian);
+				data >> thunkData;
+				numberOfFunctions++;
+			} while (thunkData != 0);
+			numberOfFunctions--;
+			listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(numberOfFunctions, 3, 10, QChar('0'))));
 			listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].OriginalFirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
 			listView->setItem(i + 2, 3, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].TimeDateStamp, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
 			listView->setItem(i + 2, 4, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].ForwarderChain, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
