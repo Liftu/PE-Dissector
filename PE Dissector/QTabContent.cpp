@@ -150,7 +150,7 @@ void QTabContent::constructTreeRootItem()
 				QWORD fileOffsetOfName = getFileOffsetFromRVA(peHeaders->importDescriptors[i].Name, peHeaders);
 				if (fileOffsetOfName != (QWORD)-1)
 				{
-					treeImportedDLLItem = new QTreeWidgetItem(TREE_ITEM_TYPE_IMPORTED_DLL + i);
+					treeImportedDLLItem = new QTreeWidgetItem(TREE_ITEM_TYPE_IMPORTED_MODULES + i);
 					// This is a temporary solution to get the name of the DLL.
 					treeImportedDLLItem->setText(0, QString(hexView->document()->read(fileOffsetOfName, MAX_PATH)));
 					treeImportedDLLItem->setIcon(0, dllFileIcon);
@@ -250,8 +250,11 @@ void QTabContent::constructListView(int treeItemType)
 		break;
 
 	default:
+		if (treeItemType >= TREE_ITEM_TYPE_IMPORTED_MODULES)
+			constructListViewImportedModule(treeItemType - TREE_ITEM_TYPE_IMPORTED_MODULES);
 		break;
 	}
+	// Auto resize the table items vertically.
 	listView->verticalHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
 
@@ -587,6 +590,35 @@ void QTabContent::constructListViewImportDirectory()
 			listView->setItem(i + 2, 5, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].Name, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
 			listView->setItem(i + 2, 6, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptors[i].FirstThunk, 2 * sizeof(DWORD), 16, QChar('0')).toUpper()));
 		}
+	}
+}
+
+void QTabContent::constructListViewImportedModule(int moduleIndex)
+{
+	listView->setColumnCount(4);
+	listView->setHorizontalHeaderLabels(QStringList() << "INT (OFT)" << "IAT (FT)" << "Hint" << "Name");
+
+	listView->setRowCount(0);
+	// Offsets (to be implemented)
+	listView->insertRow(0);
+	listView->setItem(0, 0, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 1, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 2, new QTableWidgetItem(QString("")));
+	listView->setItem(0, 3, new QTableWidgetItem(QString("")));
+	// Types
+	listView->insertRow(1);
+	listView->setItem(1, 0, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 1, new QTableWidgetItem(QString("DWORD")));
+	listView->setItem(1, 2, new QTableWidgetItem(QString("WORD")));
+	listView->setItem(1, 3, new QTableWidgetItem(QString("STRING")));
+
+	for (int i = 0; peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable; i++)
+	{
+		listView->insertRow(i + 2);
+		listView->setItem(i + 2, 0, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].importNameTable), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 1, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].importAddressTable, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].importAddressTable), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 2, new QTableWidgetItem(QString("%1").arg(peHeaders->importDescriptorsEntries[moduleIndex][i].hint, 2 * sizeof(peHeaders->importDescriptorsEntries[moduleIndex][i].hint), 16, QChar('0')).toUpper()));
+		listView->setItem(i + 2, 3, new QTableWidgetItem(QString(peHeaders->importDescriptorsEntries[moduleIndex][i].name)));
 	}
 }
 

@@ -11,6 +11,7 @@
 
 #include <Windows.h>
 extern "C" {
+	typedef struct _IMPORT_DESCRIPTOR_ENTRY IMPORT_DESCRIPTOR_ENTRY, *PIMPORT_DESCRIPTOR_ENTRY;
 	typedef struct _PE_HEADERS32 PE_HEADERS32, *PPE_HEADERS32;
 	typedef unsigned __int64 QWORD;
 	BOOL isFileExecutable(HANDLE hFile);
@@ -54,7 +55,7 @@ public:
 
 		// End of the enum because we don't know how many DLLs 
 		// are imported and we add 1 for each imported DLL
-		TREE_ITEM_TYPE_IMPORTED_DLL = QTreeWidgetItem::UserType + 100,
+		TREE_ITEM_TYPE_IMPORTED_MODULES = QTreeWidgetItem::UserType + 100,
 	};
 
 public slots:
@@ -74,6 +75,7 @@ private:
 	void constructListViewExportDirectory();
 	void constructListViewExportedFunctions();
 	void constructListViewImportDirectory();
+	void constructListViewImportedModule(int moduleIndex);
 	void constructListViewResourceDirectory();
 	void constructListViewDebugDirectory();
 	void constructListViewTLSDirectory();
