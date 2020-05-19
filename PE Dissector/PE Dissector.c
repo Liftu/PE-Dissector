@@ -92,7 +92,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 			return FALSE;
 	}
 
-	// IMPORT DIRECTORY
+	// IMPORT DESCRIPTORS
 	// Check if there is an import directory and gets the index of the section it is in.
 	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
@@ -105,6 +105,67 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 
 		if (!ReadFile(hFile, peHeaders32->importDescriptors, peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size, &numberOfBytesRead, NULL))
 			return FALSE;
+
+		// IMPORT DESCRIPTORS ENTRIES
+		peHeaders32->importDescriptorsEntries = malloc((peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14 - 1) * sizeof(IMPORT_DESCRIPTOR_ENTRY*));
+		for (int moduleIndex = 0; moduleIndex < (peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size / 0x14 - 1); moduleIndex++)
+		{
+			int numberOfImports = 0;
+			DWORD checkINT;
+			do
+			{
+				numberOfBytesRead = 0;
+				SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->importDescriptors[moduleIndex].OriginalFirstThunk + numberOfImports * sizeof(DWORD), peHeaders32), NULL, FILE_BEGIN);
+				ReadFile(hFile, &checkINT, sizeof(DWORD), &numberOfBytesRead, NULL);
+				numberOfImports++;
+			} while (checkINT);
+
+			peHeaders32->importDescriptorsEntries[moduleIndex] = malloc(numberOfImports * sizeof(IMPORT_DESCRIPTOR_ENTRY));
+			for (int functionIndex = 0; functionIndex < numberOfImports; functionIndex++)
+			{
+				IMPORT_DESCRIPTOR_ENTRY importDescriptorEntry;
+
+				// Import Name Table (OFT)
+				numberOfBytesRead = 0;
+				SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->importDescriptors[moduleIndex].OriginalFirstThunk + functionIndex * sizeof(DWORD), peHeaders32), NULL, FILE_BEGIN);
+				ReadFile(hFile, &importDescriptorEntry.importNameTable, sizeof(importDescriptorEntry.importNameTable), &numberOfBytesRead, NULL);
+
+				// Import Address Table (FT)
+				numberOfBytesRead = 0;
+				SetFilePointer(hFile, getFileOffsetFromRVA(peHeaders32->importDescriptors[moduleIndex].FirstThunk + functionIndex * sizeof(DWORD), peHeaders32), NULL, FILE_BEGIN);
+				ReadFile(hFile, &importDescriptorEntry.importAddressTable, sizeof(importDescriptorEntry.importAddressTable), &numberOfBytesRead, NULL);
+
+				if (importDescriptorEntry.importNameTable != 0 && importDescriptorEntry.importAddressTable)
+				{
+					// Hint
+					numberOfBytesRead = 0;
+					SetFilePointer(hFile, getFileOffsetFromRVA(importDescriptorEntry.importNameTable, peHeaders32), NULL, FILE_BEGIN);
+					ReadFile(hFile, &importDescriptorEntry.hint, sizeof(importDescriptorEntry.hint), &numberOfBytesRead, NULL);
+
+					// Name
+					int numberOfCharacters = 0;
+					BYTE byteRead;
+					do
+					{
+						numberOfBytesRead = 0;
+						SetFilePointer(hFile, getFileOffsetFromRVA(importDescriptorEntry.importNameTable + sizeof(importDescriptorEntry.hint) + numberOfCharacters, peHeaders32), NULL, FILE_BEGIN);
+						ReadFile(hFile, &byteRead, sizeof(byteRead), &numberOfBytesRead, NULL);
+						numberOfCharacters++;
+					} while (byteRead);
+					importDescriptorEntry.name = malloc(numberOfCharacters * sizeof(BYTE));
+					numberOfBytesRead = 0;
+					SetFilePointer(hFile, getFileOffsetFromRVA(importDescriptorEntry.importNameTable + sizeof(importDescriptorEntry.hint), peHeaders32), NULL, FILE_BEGIN);
+					ReadFile(hFile, importDescriptorEntry.name, numberOfCharacters * sizeof(BYTE), &numberOfBytesRead, NULL);
+				}
+				else
+				{
+					importDescriptorEntry.hint = 0;
+					importDescriptorEntry.name = 0;
+				}
+
+				peHeaders32->importDescriptorsEntries[moduleIndex][functionIndex] = importDescriptorEntry;
+			}
+		}
 	}
 
 	// RESSOURCE DIRECTORY
@@ -122,7 +183,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 	}
 
 	// DEBUG DIRECTORY
-	// Check if there is an export directory and gets the index of the section it is in.
+	// Check if there is a debug directory and gets the index of the section it is in.
 	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_DEBUG].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{
@@ -136,7 +197,7 @@ BOOL readPEHeaders32(HANDLE hFile, PPE_HEADERS32 peHeaders32)
 	}
 
 	// TLS DIRECTORY // Gonna assume it works because I can't find a PE sample with TLS directory in it...
-	// Check if there is an export directory and gets the index of the section it is in.
+	// Check if there is a tls directory and gets the index of the section it is in.
 	if ((sectionNumber = getSectionFromRVA(peHeaders32->ntHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress,
 		peHeaders32->ntHeaders.FileHeader.NumberOfSections, peHeaders32->sectionHeaders)) != (WORD)-1)
 	{

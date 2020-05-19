@@ -6,6 +6,15 @@
 // Don't know why, bu I had to define it myself.
 typedef unsigned __int64 QWORD;
 
+typedef struct _IMPORT_DESCRIPTOR_ENTRY
+{
+	DWORD importNameTable;
+	DWORD importAddressTable;
+	//IMAGE_IMPORT_BY_NAME importByName;
+	WORD hint;
+	LPCSTR name;
+} IMPORT_DESCRIPTOR_ENTRY, *PIMPORT_DESCRIPTOR_ENTRY;
+
 typedef struct _PE_HEADERS32
 {
 	IMAGE_DOS_HEADER dosHeader;
@@ -16,6 +25,7 @@ typedef struct _PE_HEADERS32
 	WORD*  addressOfExportedNameOrdinals;
 	DWORD* addressOfExportedNames;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
+	IMPORT_DESCRIPTOR_ENTRY** importDescriptorsEntries;
 	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;
 	IMAGE_TLS_DIRECTORY32 tlsDirectory;
@@ -31,6 +41,7 @@ typedef struct _PE_HEADERS64
 	DWORD* addressOfExportedFunctions;
 	WORD*  addressOfExportedNameOrdinals;
 	DWORD* addressOfExportedNames;
+	IMPORT_DESCRIPTOR_ENTRY** importDescriptorsEntries;
 	IMAGE_IMPORT_DESCRIPTOR* importDescriptors;
 	IMAGE_RESOURCE_DIRECTORY resourceDirectory;
 	IMAGE_DEBUG_DIRECTORY debugDirectory;
