@@ -1,29 +1,158 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PE Dissector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QTabContent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\qhexview.cpp">
+      <Filter>Source Files\QHexView</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\qhexcursor.cpp">
+      <Filter>Source Files\QHexView\document</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\qhexdocument.cpp">
+      <Filter>Source Files\QHexView\document</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\qhexmetadata.cpp">
+      <Filter>Source Files\QHexView\document</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\qhexrenderer.cpp">
+      <Filter>Source Files\QHexView\document</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\commands\hexcommand.cpp">
+      <Filter>Source Files\QHexView\document\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\commands\insertcommand.cpp">
+      <Filter>Source Files\QHexView\document\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\commands\removecommand.cpp">
+      <Filter>Source Files\QHexView\document\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\commands\replacecommand.cpp">
+      <Filter>Source Files\QHexView\document\commands</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\buffer\qhexbuffer.cpp">
+      <Filter>Source Files\QHexView\document\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\buffer\qmemorybuffer.cpp">
+      <Filter>Source Files\QHexView\document\buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="QHexView\document\buffer\qmemoryrefbuffer.cpp">
+      <Filter>Source Files\QHexView\document\buffer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files\QHexView">
+      <UniqueIdentifier>{ae77b8ef-e187-4e62-88ea-d949c1c85ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\QHexView">
+      <UniqueIdentifier>{f031af79-7487-4a26-8af8-49c626c38dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\QHexView\document">
+      <UniqueIdentifier>{ded50305-acec-45ed-8cb0-d65acc5d2972}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\QHexView\document\buffer">
+      <UniqueIdentifier>{05d3545e-a745-4620-a3bc-a1aad927b30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\QHexView\document\commands">
+      <UniqueIdentifier>{56ae5e1d-03c4-497a-9dbf-b93984a65226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\QHexView\Document">
+      <UniqueIdentifier>{6aa83fec-c702-40fe-b025-0d7d71282e1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\QHexView\Document\buffer">
+      <UniqueIdentifier>{8dc9b0d2-0afb-47c6-bdad-95cbc11dc6d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\QHexView\Document\commands">
+      <UniqueIdentifier>{a945d897-f21a-46c7-85a0-ef5ed40dc661}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\qhexcursor.h">
+      <Filter>Header Files\QHexView\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\qhexdocument.h">
+      <Filter>Header Files\QHexView\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\qhexmetadata.h">
+      <Filter>Header Files\QHexView\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\qhexrenderer.h">
+      <Filter>Header Files\QHexView\Document</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\buffer\qhexbuffer.h">
+      <Filter>Header Files\QHexView\Document\buffer</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\buffer\qmemorybuffer.h">
+      <Filter>Header Files\QHexView\Document\buffer</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\document\buffer\qmemoryrefbuffer.h">
+      <Filter>Header Files\QHexView\Document\buffer</Filter>
+    </QtMoc>
+    <QtMoc Include="QTabContent.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="QHexView\qhexview.h">
+      <Filter>Header Files\QHexView</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="MainWindow.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PE Dissector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QHexView\document\commands\hexcommand.h">
+      <Filter>Header Files\QHexView\Document\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="QHexView\document\commands\insertcommand.h">
+      <Filter>Header Files\QHexView\Document\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="QHexView\document\commands\removecommand.h">
+      <Filter>Header Files\QHexView\Document\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="QHexView\document\commands\replacecommand.h">
+      <Filter>Header Files\QHexView\Document\commands</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderMembers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

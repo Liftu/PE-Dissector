@@ -1,0 +1,21 @@
+<RCC>
+  <qresource prefix="MainWindow">
+    <file>Resources/UI_16x.png</file>
+    <file>Resources/PageHeader_blue_16x.png</file>
+    <file>Resources/FileDLL_16x.png</file>
+    <file>Resources/FileEXE_16x.png</file>
+    <file>Resources/FileSCR_16x.png</file>
+    <file>Resources/FolderClosed_16x.png</file>
+    <file>Resources/PageHeader_16x.png</file>
+    <file>Resources/BinaryFile_16x.png</file>
+    <file>Resources/OpenFolder_16x.png</file>
+    <file>Resources/BalanceBrace_16x.png</file>
+    <file>Resources/Cancel_16x.png</file>
+    <file>Resources/CloseSolution_16x.png</file>
+    <file>Resources/DisassemblyWindow_16x.png</file>
+    <file>Resources/Save_16x.png</file>
+    <file>Resources/SaveAll_16x.png</file>
+    <file>Resources/SaveAs_16x.png</file>
+    <file>Resources/Table_16x.png</file>
+  </qresource>
+</RCC>

@@ -1,31 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+VisualStudioVersion = 15.0.28307.1082
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PE Dissector", "PE Dissector\PE Dissector.vcxproj", "{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PE Dissector", "PE Dissector\PE Dissector.vcxproj", "{0FEC2A5F-8ACB-43F2-8E01-BFC946602B2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Debug|x64.ActiveCfg = Debug|x64
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Debug|x64.Build.0 = Debug|x64
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Debug|x86.ActiveCfg = Debug|Win32
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Debug|x86.Build.0 = Debug|Win32
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Release|x64.ActiveCfg = Release|x64
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Release|x64.Build.0 = Release|x64
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Release|x86.ActiveCfg = Release|Win32
-		{777D9C0E-A6F0-4CF8-9BC5-E1862BD2BAC8}.Release|x86.Build.0 = Release|Win32
+		{0FEC2A5F-8ACB-43F2-8E01-BFC946602B2E}.Debug|x64.ActiveCfg = Debug|x64
+		{0FEC2A5F-8ACB-43F2-8E01-BFC946602B2E}.Debug|x64.Build.0 = Debug|x64
+		{0FEC2A5F-8ACB-43F2-8E01-BFC946602B2E}.Release|x64.ActiveCfg = Release|x64
+		{0FEC2A5F-8ACB-43F2-8E01-BFC946602B2E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {39B8EC2D-A7B5-47A9-8DE3-E2AEFB8CB8D8}
+		SolutionGuid = {0A0952C2-9F96-49B4-A093-778B94B73C11}
 	EndGlobalSection
 EndGlobal
